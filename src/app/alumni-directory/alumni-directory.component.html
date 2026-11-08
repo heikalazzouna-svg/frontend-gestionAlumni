@@ -1,0 +1,158 @@
+<div class="directory-container">
+  <div class="directory-header">
+    <h1>Annuaire Alumni</h1>
+    <p class="subtitle">Recherchez et connectez-vous avec les anciens diplômés</p>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="filters-section">
+    <div class="search-bar">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        placeholder="Rechercher par nom, poste ou entreprise..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
+
+    <div class="filter-row">
+      <select [ngModel]="sectorFilter()" (ngModelChange)="sectorFilter.set($event)">
+        <option value="">Tous les secteurs</option>
+        @for (s of sectors(); track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+
+      <select [ngModel]="companyFilter()" (ngModelChange)="companyFilter.set($event)">
+        <option value="">Toutes les entreprises</option>
+        @for (c of companies(); track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+
+      <select [ngModel]="yearFilter()" (ngModelChange)="yearFilter.set($event ? +$event : null)">
+        <option [ngValue]="null">Toutes les promotions</option>
+        @for (y of years(); track y) {
+          <option [value]="y">{{ y }}</option>
+        }
+      </select>
+
+      <input
+        type="text"
+        class="skill-input"
+        placeholder="Filtrer par compétence..."
+        [ngModel]="skillFilter()"
+        (ngModelChange)="skillFilter.set($event)"
+      />
+
+      <button class="btn-clear" (click)="clearFilters()">Réinitialiser</button>
+    </div>
+  </div>
+
+  <!-- Results count -->
+  <div class="results-info">
+    <span>{{ filteredAlumni().length }} alumni trouvé{{ filteredAlumni().length !== 1 ? 's' : '' }}</span>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement de l'annuaire...</p>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && filteredAlumni().length === 0) {
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon">
+        <path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
+        <path d="M4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+      </svg>
+      <p>Aucun alumni trouvé pour ces critères</p>
+      <button class="btn-clear" (click)="clearFilters()">Réinitialiser les filtres</button>
+    </div>
+  }
+
+  <!-- Alumni Grid -->
+  @if (!loading() && filteredAlumni().length > 0) {
+    <div class="alumni-grid">
+      @for (a of filteredAlumni(); track a.id) {
+        <div class="alumni-card">
+          <div class="card-header">
+            <div class="avatar">
+              <img *ngIf="a.avatarUrl" [src]="a.avatarUrl" [alt]="a.firstName" class="avatar-img" />
+              <span *ngIf="!a.avatarUrl">{{ getInitials(a) }}</span>
+            </div>
+            <div class="card-title">
+              <h3>{{ a.firstName }} {{ a.lastName }}</h3>
+              <p class="job-title">{{ a.currentJob || 'Poste non renseigné' }}</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+            @if (a.currentCompany) {
+              <div class="info-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/>
+                </svg>
+                <span>{{ a.currentCompany }}</span>
+              </div>
+            }
+            @if (a.sector) {
+              <div class="info-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/>
+                  <path d="M6 6h.008v.008H6V6Z"/>
+                </svg>
+                <span>{{ a.sector }}</span>
+              </div>
+            }
+            @if (a.graduationYear) {
+              <div class="info-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a23.54 23.54 0 0 0-2.688 6.012A48.684 48.684 0 0 1 12 23.004a48.684 48.684 0 0 1 8.429-3.845 23.54 23.54 0 0 0-2.688-6.012M12 3.004l8.25 4.873L12 12.75 3.75 7.877 12 3.004Z"/>
+                </svg>
+                <span>Promotion {{ a.graduationYear }}</span>
+              </div>
+            }
+          </div>
+
+          @if (a.skills && a.skills.length > 0) {
+            <div class="skills-row">
+              @for (skill of a.skills.slice(0, 4); track skill) {
+                <span class="skill-tag">{{ skill }}</span>
+              }
+              @if (a.skills.length > 4) {
+                <span class="skill-tag more">+{{ a.skills.length - 4 }}</span>
+              }
+            </div>
+          }
+
+          <div class="card-footer">
+            <div class="badge-row">
+              @if (a.openToMentoring) {
+                <span class="badge mentoring">Mentorat</span>
+              }
+              @if (a.willingToRefer) {
+                <span class="badge referral">Recommandation</span>
+              }
+              @if (a.openToCareerAdvice) {
+                <span class="badge advice">Conseils carrière</span>
+              }
+            </div>
+            <button class="btn-message" (click)="openChat(a.id)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                <path d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/>
+              </svg>
+              Message
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

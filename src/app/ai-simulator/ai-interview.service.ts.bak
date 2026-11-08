@@ -1,0 +1,149 @@
+import { Injectable } from '@angular/core';
+
+export interface InterviewQuestion {
+  id: number;
+  text: string;
+  type: 'behavioral' | 'technical' | 'situational' | 'career';
+}
+
+export interface QuestionFeedback {
+  questionId: number;
+  score: number; // out of 10
+  details: {
+    content: number; // 0-10 relative weight
+    structure: number;
+    technical: number;
+    soft: number;
+  };
+  strengths: string[];
+  improvements: string[];
+  suggestion: string;
+}
+
+export interface InterviewSession {
+  id: string;
+  jobType: string;
+  level: string;
+  sector?: string;
+  interviewType: string;
+  duration: string;
+  difficulty: string;
+  startedAt: string;
+  endedAt?: string;
+  questions: InterviewQuestion[];
+  feedback: QuestionFeedback[];
+  overallScore?: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class AiInterviewService {
+  private STORAGE_KEY = 'ai_interview_history_v1';
+  private questionId = 1;
+
+  // Small question pools for demo purposes
+  private behavioral = [
+    "Parlez-moi de vous.",
+    "Décrivez une situation difficile que vous avez gérée.",
+    "Quelles sont vos forces et faiblesses ?",
+    "Pourquoi ce poste vous intéresse-t-il ?"
+  ];
+  private technical = [
+    "Expliquez la différence entre HTTP et HTTPS.",
+    "Comment fonctionne une requête SQL JOIN ?",
+    "Comment optimisez-vous les performances d'une API REST ?",
+    "Décrivez un projet technique dont vous êtes fier."
+  ];
+  private situational = [
+    "Comment réagiriez-vous si vous étiez en désaccord avec votre manager ?",
+    "Que feriez-vous si une échéance critique était menacée ?"
+  ];
+  private career = [
+    "Parlez d'un projet académique ou professionnel marquant.",
+    "Où vous voyez-vous dans 5 ans ?"
+  ];
+
+  generateQuestion(interviewType: string, difficulty: string, prev?: InterviewQuestion) : InterviewQuestion {
+    // choose pool based on interviewType or randomly
+    const rand = (arr: string[]) => arr[Math.floor(Math.random()*arr.length)];
+    let text = '';
+    let type: InterviewQuestion['type'] = 'behavioral';
+
+    if (interviewType === 'RH') {
+      text = rand(this.behavioral);
+      type = 'behavioral';
+    } else if (interviewType === 'Tech') {
+      text = rand(this.technical);
+      type = 'technical';
+    } else if (interviewType === 'Mix') {
+      text = Math.random() > 0.5 ? rand(this.technical) : rand(this.behavioral);
+      type = Math.random() > 0.5 ? 'technical' : 'behavioral';
+    } else {
+      text = rand([...this.behavioral, ...this.technical, ...this.situational, ...this.career]);
+      type = 'behavioral';
+    }
+
+    return { id: this.questionId++, text, type };
+  }
+
+  evaluateAnswer(question: InterviewQuestion, answer: string): QuestionFeedback {
+    // Basic heuristic scoring for demo
+    const lenScore = Math.min(1, answer.trim().length / 200); // up to 1
+    const hasSTAR = /situation|tâche|action|résultat|situation|action/i.test(answer) ? 1 : 0;
+    const technicalWords = /(API|SQL|HTTP|REST|algorithm|complexity|architecture|Spring|Angular|React|Node)/i.test(answer) ? 1 : 0;
+
+    const content = Math.round((0.6*lenScore + 0.4*hasSTAR) * 10);
+    const structure = Math.round((0.6*hasSTAR + 0.4*lenScore) * 10);
+    const technical = question.type === 'technical' ? Math.round((0.7*technicalWords + 0.3*lenScore) * 10) : Math.round( (0.2*technicalWords + 0.8*lenScore) * 10);
+    const soft = Math.round((0.5*(answer.includes('motivation')?1:0) + 0.5*lenScore) * 10);
+
+    const score = Math.round((content*0.4 + structure*0.25 + technical*0.2 + soft*0.15)/1);
+
+    const strengths = [] as string[];
+    const improvements = [] as string[];
+    if (lenScore > 0.6) strengths.push('Réponse détaillée'); else improvements.push('Donner plus d’exemples concrets');
+    if (hasSTAR) strengths.push('Structure claire (STAR)'); else improvements.push('Utiliser la méthode STAR');
+    if (technicalWords && question.type === 'technical') strengths.push('Bon vocabulaire technique');
+
+    const suggestion = question.type === 'technical'
+      ? 'Commencez par exposer le contexte, expliquez la solution puis terminez par un résultat chiffré si possible.'
+      : 'Répondez en suivant la structure Situation → Tâche → Action → Résultat et illustrez par un exemple concret.';
+
+    return {
+      questionId: question.id,
+      score: Math.min(10, Math.max(1, Math.round(score/1))),
+      details: { content, structure, technical, soft },
+      strengths,
+      improvements,
+      suggestion
+    };
+  }
+
+  saveSession(session: InterviewSession) {
+    const all = this.getHistory();
+    all.unshift(session);
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(all));
+  }
+
+  getHistory(): InterviewSession[] {
+    try {
+      const s = localStorage.getItem(this.STORAGE_KEY);
+      return s ? JSON.parse(s) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  clearHistory() {
+    localStorage.removeItem(this.STORAGE_KEY);
+  }
+
+  computeBadges(history: InterviewSession[]) {
+    const badges: Record<string, boolean> = {};
+    badges['first'] = history.length >= 1;
+    badges['persistent'] = history.length >= 10;
+    const byJob: Record<string, InterviewSession[]> = {};
+    history.forEach(h => { byJob[h.jobType] = byJob[h.jobType] || []; byJob[h.jobType].push(h); });
+    badges['expertAnyJob'] = Object.values(byJob).some(arr => arr.filter(s => (s.overallScore||0) >= 90).length >= 3);
+    return badges;
+  }
+}

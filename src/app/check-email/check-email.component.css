@@ -1,0 +1,36 @@
+/* Inherits from global auth styles if available, or just basic layout */
+.auth-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f7f6;
+  font-family: 'Inter', sans-serif;
+}
+.auth-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-form-wrapper {
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  width: 100%;
+}
+.auth-form-header h1 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+.auth-form-header p {
+  color: #596a7b;
+}
+.auth-footer a {
+  color: #00d289;
+  text-decoration: none;
+  font-weight: 500;
+}
+.auth-footer a:hover {
+  text-decoration: underline;
+}

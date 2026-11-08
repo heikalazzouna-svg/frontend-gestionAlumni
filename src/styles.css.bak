@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --primary: #4a90e2;
+  --secondary: #f5a623;
+  --background: #f0f4f8;
+  --card-bg: #ffffff;
+  --text-dark: #333333;
+  --ink: #1a1a1a;
+  --ink-muted: #666;
+  --accent: #4a90e2;
+  --accent-2: #27AE7A;
+  --accent-3: #8B46E8;
+  --accent-4: #E8521A;
+  --gold: #D4A843;
+  --border: #ccc;
+  --paper: #fafafa;
+  --paper-warm: #f5f0e6;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--background);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+}
+
+/* Global top navbar styles to ensure consistent header across pages */
+.topbar {
+  background: linear-gradient(90deg,#0b0f14,#121318);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: #fff;
+  width: 100%;
+}
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  gap: 12px;
+}
+.logo-group { display:flex; align-items:center; gap:12px; }
+.logo-img { height:40px; width:auto; display:block; }
+.nav-center { display:flex; gap:20px; align-items:center; justify-content:center; flex:1; }
+.nav-link { color: rgba(255,255,255,0.9); text-decoration:none; padding:8px 6px; font-weight:600; }
+.nav-link:hover { color: #fff; }
+.nav-link.active { color: #ff9a64; border-bottom:3px solid #ff9a64; padding-bottom:5px; }
+.nav-right { display:flex; gap:10px; align-items:center; }
+.icon-btn { background: transparent; border:1px solid rgba(255,255,255,0.08); color:#fff; padding:8px; border-radius:6px; cursor:pointer; }
+.outline-btn { background: transparent; border:1px solid rgba(255,255,255,0.12); color:#fff; padding:8px 10px; border-radius:6px; cursor:pointer; }
+.cta-btn { background: #ff6b2d; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:700; }
+
+/* Small screens: collapse central nav */
+@media (max-width: 800px) {
+  .nav-center { display:none; }
+  .logo-img { height:36px; }
+}
+
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+button.btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+button.btn:hover {
+  background: #357abc;
+  transform: translateY(-2px);
+}
+
+input, select, textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+h2 { color: var(--primary); }
+h3 { color: var(--secondary); margin-top: 24px; }
+
+/* ================================================
+   PATCH SIMULATEUR IA & DASHBOARD
+   ================================================ */
+
+/* 1. Force le fond noir sur toute la page */
+body:has(app-ai-simulator),
+body:has(app-ai-dashboard) {
+  background: #080B12 !important;
+  color: #F0F4FF !important;
+}
+
+/* 2. Reset du body lui-même (margin/padding) */
+body:has(app-ai-simulator) *,
+body:has(app-ai-dashboard) * {
+  box-sizing: border-box;
+}
+
+/* 3. Cache le bandeau "Innovation IA" — classes exactes des DevTools */
+body:has(app-ai-simulator) .section-label,
+body:has(app-ai-simulator) section > .container > .section-label,
+body:has(app-ai-simulator) section > .container > h2,
+body:has(app-ai-simulator) section > .container > p,
+body:has(app-ai-dashboard) .section-label,
+body:has(app-ai-dashboard) section > .container > .section-label,
+body:has(app-ai-dashboard) section > .container > h2,
+body:has(app-ai-dashboard) section > .container > p {
+  display: none !important;
+}
+
+/* Cache toute la section parente du bandeau */
+body:has(app-ai-simulator) section:has(.section-label),
+body:has(app-ai-dashboard) section:has(.section-label) {
+  display: none !important;
+}
+
+/* Fallback — cache tous les ancêtres directs */
+body:has(app-ai-simulator) .page-header,
+body:has(app-ai-simulator) .section-header,
+body:has(app-ai-simulator) .breadcrumb-header,
+body:has(app-ai-simulator) .page-title-bar,
+body:has(app-ai-simulator) .page-banner,
+body:has(app-ai-simulator) .hero-section,
+body:has(app-ai-simulator) .sub-header,
+body:has(app-ai-dashboard) .page-header,
+body:has(app-ai-dashboard) .section-header,
+body:has(app-ai-dashboard) .breadcrumb-header,
+body:has(app-ai-dashboard) .page-title-bar,
+body:has(app-ai-dashboard) .page-banner,
+body:has(app-ai-dashboard) .hero-section,
+body:has(app-ai-dashboard) .sub-header {
+  display: none !important;
+}
+
+/* 4. Supprime padding/margin/fond du container parent */
+body:has(app-ai-simulator) .main-content,
+body:has(app-ai-simulator) .content-wrapper,
+body:has(app-ai-simulator) .page-content,
+body:has(app-ai-simulator) .router-wrapper,
+body:has(app-ai-simulator) .app-content,
+body:has(app-ai-simulator) .container-fluid,
+body:has(app-ai-dashboard) .main-content,
+body:has(app-ai-dashboard) .content-wrapper,
+body:has(app-ai-dashboard) .page-content,
+body:has(app-ai-dashboard) .router-wrapper,
+body:has(app-ai-dashboard) .app-content,
+body:has(app-ai-dashboard) .container-fluid {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #080B12 !important;
+  max-width: 100% !important;
+}
+
+/* 5. Reset des inputs/selects dans les pages dark
+      (sinon ils héritent du style global blanc) */
+body:has(app-ai-simulator) input,
+body:has(app-ai-simulator) select,
+body:has(app-ai-simulator) textarea,
+body:has(app-ai-dashboard) input,
+body:has(app-ai-dashboard) select,
+body:has(app-ai-dashboard) textarea {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: #F0F4FF !important;
+}
+
+/* 6. Reset des h2/h3 dans les pages dark */
+body:has(app-ai-simulator) h2,
+body:has(app-ai-simulator) h3,
+body:has(app-ai-dashboard) h2,
+body:has(app-ai-dashboard) h3 {
+  color: inherit !important;
+}
+
+/* Apply same dark, immersive layout used by AI simulator to Events pages */
+body:has(app-events-list),
+body:has(app-event-detail),
+body:has(app-event-create) {
+  background: #080B12 !important;
+  color: #F0F4FF !important;
+}
+
+body:has(app-events-list) *,
+body:has(app-event-detail) *,
+body:has(app-event-create) * {
+  box-sizing: border-box;
+}
+
+/* hide site chrome sections that clash with immersive layout */
+body:has(app-events-list) .section-label,
+body:has(app-events-list) section > .container > .section-label,
+body:has(app-events-list) section > .container > h2,
+body:has(app-events-list) section > .container > p,
+body:has(app-event-detail) .section-label,
+body:has(app-event-create) .section-label {
+  display: none !important;
+}
+
+body:has(app-events-list) .page-header,
+body:has(app-events-list) .section-header,
+body:has(app-events-list) .breadcrumb-header,
+body:has(app-events-list) .page-title-bar,
+body:has(app-events-list) .page-banner,
+body:has(app-events-list) .hero-section,
+body:has(app-event-detail) .page-header,
+body:has(app-event-create) .page-header {
+  display: none !important;
+}
+
+/* container reset for immersive pages */
+body:has(app-events-list) .main-content,
+body:has(app-events-list) .content-wrapper,
+body:has(app-events-list) .page-content,
+body:has(app-events-list) .router-wrapper,
+body:has(app-events-list) .app-content,
+body:has(app-events-list) .container-fluid,
+body:has(app-event-detail) .main-content,
+body:has(app-event-create) .main-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #080B12 !important;
+  max-width: 100% !important;
+}
+
+/* Inputs in dark pages */
+body:has(app-events-list) input,
+body:has(app-events-list) select,
+body:has(app-events-list) textarea,
+body:has(app-event-detail) input,
+body:has(app-event-create) input {
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #F0F4FF !important;
+}
+
+/* headings inherit color on events pages */
+body:has(app-events-list) h2,
+body:has(app-events-list) h3,
+body:has(app-event-detail) h2,
+body:has(app-event-create) h2 {
+  color: inherit !important;
+}

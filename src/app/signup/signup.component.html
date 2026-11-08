@@ -1,0 +1,206 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <a routerLink="/" class="auth-brand">
+        <span class="brand-icon">&#9670;</span>
+        <span>Edu<span class="brand-accent">Link</span></span>
+      </a>
+      <div class="auth-illustration">
+        <div class="illustration-shapes">
+          <div class="ill-shape ill-1"></div>
+          <div class="ill-shape ill-2"></div>
+          <div class="ill-shape ill-3"></div>
+        </div>
+        <h2>Rejoins la communauté ENICarthage</h2>
+        <p>Crée ton compte et accède à des milliers d'opportunités de stages, d'emplois et de mentorat.</p>
+      </div>
+      <div class="auth-stats-row">
+        <div class="auth-stat">
+          <span class="auth-stat-num">2,000+</span>
+          <span class="auth-stat-label">Membres</span>
+        </div>
+        <div class="auth-stat">
+          <span class="auth-stat-num">500+</span>
+          <span class="auth-stat-label">Offres</span>
+        </div>
+        <div class="auth-stat">
+          <span class="auth-stat-num">150+</span>
+          <span class="auth-stat-label">Entreprises</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-wrapper">
+      <div class="auth-form-header">
+        <h1>Créer un compte</h1>
+        <p>Choisis ton profil et commence ton aventure</p>
+      </div>
+
+      <!-- Role selector -->
+      <div class="role-selector" role="radiogroup" aria-label="Type de profil">
+        <button type="button" class="role-option" role="radio" [attr.aria-checked]="userType === 'student'" [class.active]="userType === 'student'" (click)="selectUserType('student')">
+          <span class="role-emoji" aria-hidden="true">🎓</span>
+          <span class="role-label">Étudiant</span>
+        </button>
+        <button type="button" class="role-option" role="radio" [attr.aria-checked]="userType === 'alumni'" [class.active]="userType === 'alumni'" (click)="selectUserType('alumni')">
+          <span class="role-emoji" aria-hidden="true">🌟</span>
+          <span class="role-label">Alumni</span>
+        </button>
+        <button type="button" class="role-option" role="radio" [attr.aria-checked]="userType === 'recruiter'" [class.active]="userType === 'recruiter'" (click)="selectUserType('recruiter')">
+          <span class="role-emoji" aria-hidden="true">🏢</span>
+          <span class="role-label">Recruteur</span>
+        </button>
+      </div>
+
+      <!-- Student Form -->
+      <form class="auth-form" *ngIf="userType === 'student'" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prénom</label>
+            <input type="text" placeholder="Votre prénom" [(ngModel)]="student.firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label>Nom</label>
+            <input type="text" placeholder="Votre nom" [(ngModel)]="student.lastName" name="lastName" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email universitaire</label>
+          <div class="input-wrapper">
+            <i class="fa fa-envelope input-icon"></i>
+            <input type="email" placeholder="prenom.nom@enicarthage.tn" [(ngModel)]="student.email" name="email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="fa fa-lock input-icon"></i>
+            <input [type]="showPassword ? 'text' : 'password'" placeholder="8+ caractères" [(ngModel)]="student.password" name="password" required>
+            <button type="button" class="toggle-pw" (click)="togglePassword()">
+              {{ showPassword ? 'Masquer' : 'Afficher' }}
+            </button>
+          </div>
+          <span class="field-hint">Minimum 8 caractères avec lettres, chiffres et symboles</span>
+        </div>
+        <div class="terms-check">
+          <p>En créant un compte, vous acceptez les <a routerLink="/terms">Conditions d'utilisation</a> et la <a routerLink="/terms">Politique de confidentialité</a>.</p>
+        </div>
+        <button type="submit" class="submit-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Créer mon compte</span>
+          <span *ngIf="isLoading"><i class="fa fa-spinner fa-spin"></i> Inscription...</span>
+        </button>
+      </form>
+
+      <!-- Alumni Form -->
+      <form class="auth-form" *ngIf="userType === 'alumni'" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prénom</label>
+            <input type="text" placeholder="Votre prénom" [(ngModel)]="alumni.firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label>Nom</label>
+            <input type="text" placeholder="Votre nom" [(ngModel)]="alumni.lastName" name="lastName" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Année de diplôme</label>
+            <input type="number" placeholder="2024" [(ngModel)]="alumni.graduationYear" name="graduationYear" required>
+          </div>
+          <div class="form-group">
+            <label>Spécialité</label>
+            <input type="text" placeholder="Génie Logiciel" [(ngModel)]="alumni.speciality" name="speciality" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <div class="input-wrapper">
+            <i class="fa fa-envelope input-icon"></i>
+            <input type="email" placeholder="votre.email@exemple.com" [(ngModel)]="alumni.email" name="email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="fa fa-lock input-icon"></i>
+            <input [type]="showPassword ? 'text' : 'password'" placeholder="8+ caractères" [(ngModel)]="alumni.password" name="password" required>
+            <button type="button" class="toggle-pw" (click)="togglePassword()">
+              {{ showPassword ? 'Masquer' : 'Afficher' }}
+            </button>
+          </div>
+        </div>
+        <div class="terms-check">
+          <p>En créant un compte, vous acceptez les <a routerLink="/terms">Conditions d'utilisation</a> et la <a routerLink="/terms">Politique de confidentialité</a>.</p>
+        </div>
+        <button type="submit" class="submit-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Créer mon compte</span>
+          <span *ngIf="isLoading"><i class="fa fa-spinner fa-spin"></i> Inscription...</span>
+        </button>
+      </form>
+
+      <!-- Recruiter Form -->
+      <form class="auth-form" *ngIf="userType === 'recruiter'" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prénom</label>
+            <input type="text" placeholder="Votre prénom" [(ngModel)]="recruiter.firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label>Nom</label>
+            <input type="text" placeholder="Votre nom" [(ngModel)]="recruiter.lastName" name="lastName" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Nom de l'entreprise</label>
+          <input type="text" placeholder="Entreprise" [(ngModel)]="recruiter.companyName" name="companyName" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Secteur</label>
+            <input type="text" placeholder="IT, Finance..." [(ngModel)]="recruiter.sector" name="sector" required>
+          </div>
+          <div class="form-group">
+            <label>Localisation</label>
+            <input type="text" placeholder="Tunis" [(ngModel)]="recruiter.location" name="location" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email professionnel</label>
+          <div class="input-wrapper">
+            <i class="fa fa-envelope input-icon"></i>
+            <input type="email" placeholder="email@entreprise.com" [(ngModel)]="recruiter.email" name="email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="fa fa-lock input-icon"></i>
+            <input [type]="showPassword ? 'text' : 'password'" placeholder="8+ caractères" [(ngModel)]="recruiter.password" name="password" required>
+            <button type="button" class="toggle-pw" (click)="togglePassword()">
+              {{ showPassword ? 'Masquer' : 'Afficher' }}
+            </button>
+          </div>
+        </div>
+        <div class="terms-check">
+          <p>En créant un compte, vous acceptez les <a routerLink="/terms">Conditions d'utilisation</a> et la <a routerLink="/terms">Politique de confidentialité</a>.</p>
+        </div>
+        <button type="submit" class="submit-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Créer mon compte</span>
+          <span *ngIf="isLoading"><i class="fa fa-spinner fa-spin"></i> Inscription...</span>
+        </button>
+      </form>
+
+      <div class="error-message" *ngIf="errorMessage" role="alert" aria-live="assertive">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        {{ errorMessage }}
+      </div>
+
+      <div class="auth-footer">
+        <p>Déjà inscrit ? <a routerLink="/login">Se connecter</a></p>
+      </div>
+    </div>
+  </div>
+</div>

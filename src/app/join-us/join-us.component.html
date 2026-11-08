@@ -1,0 +1,105 @@
+<div class="join-us-container">
+    <!-- Tabs for Sign Up and Log In -->
+    <div class="auth-choice">
+      <button class="auth-tab" [class.active]="isSignUpTab" (click)="showSignUp()">Sign Up</button>
+      <button class="auth-tab" [class.active]="!isSignUpTab" (click)="showLogin()">Log In</button>
+    </div>
+  
+    <!-- Sign Up Form (Visible when isSignUpTab is true) -->
+    <div class="signup-form" *ngIf="isSignUpTab">
+      <div class="user-type-selector">
+        <div class="radio-option" (click)="selectUserType('student')">
+          <span class="radio-button" [class.selected]="userType === 'student'"></span>
+          <span>Enicarthage Student</span>
+        </div>
+        <div class="radio-option" (click)="selectUserType('alumni')">
+          <span class="radio-button" [class.selected]="userType === 'alumni'"></span>
+          <span>Enicarthage Alumni</span>
+        </div>
+      </div>
+  
+      <!-- Student Form (Visible when userType is 'student') -->
+      <div class="student-form" *ngIf="userType === 'student'">
+        <form (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="first-name">First name</label>
+            <input type="text" id="first-name" placeholder="First name" [(ngModel)]="student.firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label for="last-name">Last name</label>
+            <input type="text" id="last-name" placeholder="Last name" [(ngModel)]="student.lastName" name="lastName" required>
+          </div>
+          <div class="form-group">
+            <label for="email">University email address</label>
+            <input type="email" id="email" placeholder="University email address" [(ngModel)]="student.email" name="email" required>
+          </div>
+          <div class="form-group password-group">
+            <label for="password">Password</label>
+            <input [type]="showPassword ? 'text' : 'password'" id="password" placeholder="Enter your password" [(ngModel)]="student.password" name="password" required>
+            <span class="toggle-password" (click)="togglePassword()">{{ showPassword ? 'Hide' : 'Show' }}</span>
+          </div>
+          <p class="password-hint">Use 8 or more characters with a mix of letters, numbers & symbols</p>
+  
+          <div class="terms-agreement">
+            <p>By creating an account, you agree to the <a href="/terms">Terms of use</a> and <a href="/terms">Privacy Policy</a>.</p>
+          </div>
+  
+          <button type="submit" class="submit-button">Sign Up</button>
+        </form>
+      </div>
+  
+      <!-- Alumni Form (Visible when userType is 'alumni') -->
+      <div class="student-form" *ngIf="userType === 'alumni'">
+        <form (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="full-name">Full name</label>
+            <input type="text" id="full-name" placeholder="Full name" [(ngModel)]="alumni.fullName" name="fullName" required>
+          </div>
+          <div class="form-group">
+            <label for="graduation-year">Graduation Year</label>
+            <input type="number" id="graduation-year" placeholder="Graduation Year" [(ngModel)]="alumni.graduationYear" name="graduationYear" required>
+          </div>
+          <div class="form-group">
+            <label for="alumni-email">University email address</label>
+            <input type="email" id="alumni-email" placeholder="University email address" [(ngModel)]="alumni.email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" id="id" placeholder="ID" [(ngModel)]="alumni.id" name="id" required>
+          </div>
+          <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" id="department" placeholder="Department" [(ngModel)]="alumni.department" name="department" required>
+          </div>
+          <div class="form-group password-group">
+            <label for="alumni-password">Password</label>
+            <input [type]="showPassword ? 'text' : 'password'" id="alumni-password" placeholder="Enter your password" [(ngModel)]="alumni.password" name="password" required>
+            <span class="toggle-password" (click)="togglePassword()">{{ showPassword ? 'Hide' : 'Show' }}</span>
+          </div>
+          <p class="password-hint">Use 8 or more characters with a mix of letters, numbers & symbols</p>
+  
+          <div class="terms-agreement">
+            <p>By creating an account, you agree to the <a href="/terms">Terms of use</a> and <a href="/terms">Privacy Policy</a>.</p>
+          </div>
+  
+          <button type="submit" class="submit-button">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Log In Form (Visible when isSignUpTab is false) -->
+    <div class="form-box" *ngIf="!isSignUpTab">
+      <form class="form" (ngSubmit)="onLogin()">
+        <span class="title">Log In</span>
+        <span class="subtitle">Access your account with your email.</span>
+        <div class="form-container">
+          <input type="email" class="input" placeholder="Email" [(ngModel)]="login.email" name="email" required>
+          <input type="password" class="input" placeholder="Password" [(ngModel)]="login.password" name="password" required>
+        </div>
+        <button type="submit">Log In</button>
+      </form>
+      <div class="form-section">
+        <p>Don't have an account? <a href="#" (click)="showSignUp()">Sign Up</a></p>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,71 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <div class="sidebar-header">
+      <a routerLink="/" class="sidebar-brand" *ngIf="!isSidebarCollapsed">
+        <span class="brand-icon">&#9670;</span>
+        <span>Edu<span class="accent">Link</span></span>
+      </a>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <i class="fas" [class.fa-chevron-left]="!isSidebarCollapsed" [class.fa-chevron-right]="isSidebarCollapsed"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/home" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-chart-pie"></i>
+        <span *ngIf="!isSidebarCollapsed">Vue d'ensemble</span>
+      </a>
+      <a routerLink="/admin/users" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-user-shield"></i>
+        <span *ngIf="!isSidebarCollapsed">Gestion Utilisateurs</span>
+      </a>
+      <a routerLink="/events" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-calendar-check"></i>
+        <span *ngIf="!isSidebarCollapsed">Gérer Événements</span>
+      </a>
+      <a routerLink="/admin/offers" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-file-invoice"></i>
+        <span *ngIf="!isSidebarCollapsed">Modération Offres</span>
+      </a>
+      <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-cog"></i>
+        <span *ngIf="!isSidebarCollapsed">Paramètres</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="!isSidebarCollapsed">
+        <div class="user-avatar admin">
+          <img *ngIf="currentUser?.avatarUrl" [src]="currentUser?.avatarUrl" [alt]="currentUser?.firstName" class="sidebar-avatar-img" />
+          <span *ngIf="!currentUser?.avatarUrl">{{ currentUser?.firstName?.charAt(0) }}{{ currentUser?.lastName?.charAt(0) }}</span>
+        </div>
+        <div class="user-details">
+          <p class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</p>
+          <p class="user-role">Administrateur</p>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span *ngIf="!isSidebarCollapsed">Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="top-header">
+      <div class="page-title">
+        <h2>Administration</h2>
+      </div>
+      <app-user-menu
+        [user]="currentUser"
+        [notificationCount]="0">
+      </app-user-menu>
+    </header>
+
+    <section class="content-area">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

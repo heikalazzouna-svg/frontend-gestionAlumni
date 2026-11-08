@@ -1,0 +1,161 @@
+<div class="matching-container">
+  <header class="page-header">
+    <h1>Trouver un Mentor Alumni</h1>
+    <p>Recherchez des diplômés par entreprise, compétences ou secteur d'activité.</p>
+  </header>
+
+  <!-- Information Section -->
+  <div class="info-section">
+    <div class="info-grid">
+      <!-- Info Item 1 -->
+      <div class="info-card">
+        <div class="info-icon">🔍</div>
+        <h3>Utilisez les Filtres pour Affiner votre Recherche</h3>
+        <p>Explorez les filtres disponibles (Entreprise, Poste, Secteur, Spécialité, Compétences) pour trouver des mentors alignés avec vos objectifs professionnels. Plus vous affinez, plus vous trouvez des mentors pertinents.</p>
+      </div>
+
+      <!-- Info Item 2 -->
+      <div class="info-card">
+        <div class="info-icon">⭐</div>
+        <h3>Consultez le Profil Complet</h3>
+        <p>Chaque carte affiche les compétences et l'expertise du mentor. Cliquez sur "Voir Profil" pour découvrir son parcours académique, son expérience professionnelle et son approche du mentorat.</p>
+      </div>
+
+      <!-- Info Item 3 -->
+      <div class="info-card">
+        <div class="info-icon">💬</div>
+        <h3>Initiez une Conversation</h3>
+        <p>Une fois que vous avez trouvé le mentor idéal, utilisez la messagerie intégrée pour lui envoyer un message personnel. Présentez-vous et expliquez pourquoi vous souhaitez être mentorné par lui.</p>
+      </div>
+
+      <!-- Info Item 4 -->
+      <div class="info-card">
+        <div class="info-icon">✓</div>
+        <h3>Vérifiez la Disponibilité</h3>
+        <p>Le badge "Disponible pour mentorat" vous indique si le mentor accepte actuellement de nouveaux mentorats. Seulement les mentors disponibles peuvent être contactés pour des demandes de mentorat.</p>
+      </div>
+
+      <!-- Info Item 5 -->
+      <div class="info-card">
+        <div class="info-icon">🎯</div>
+        <h3>Définissez Vos Objectifs Clairement</h3>
+        <p>Avant de contacter un mentor, identifiez vos objectifs: amélioration de compétences, conseils de carrière, accès à un réseau, développement personnel, ou transition professionnelle. Cela facilite le match.</p>
+      </div>
+
+      <!-- Info Item 6 -->
+      <div class="info-card">
+        <div class="info-icon">🤝</div>
+        <h3>Construisez une Relation Productive</h3>
+        <p>Le mentorat est une relation bilatérale. Soyez respectueux du temps du mentor, préparez vos questions, suivez les conseils reçus et tenez votre mentor informé de vos progrès et résultats.</p>
+      </div>
+
+      <!-- Info Item 7 -->
+      <div class="info-card">
+        <div class="info-icon">💡</div>
+        <h3>Explorez Différents Profils</h3>
+        <p>N'hésitez pas à explorer plusieurs profils d'alumni. Les mentors offrent des perspectives différentes. Vous pouvez avoir plusieurs mentors pour différent aspects de votre développement professionnel.</p>
+      </div>
+
+      <!-- Info Item 8 -->
+      <div class="info-card">
+        <div class="info-icon">📊</div>
+        <h3>Utilisez le Suivi de Mentorat</h3>
+        <p>Accédez à la section "Suivi de Mentorat" pour documenter vos sessions, tracker vos progrès et évaluer l'impact du mentorat sur votre développement professionnel et personnel.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>Entreprise</label>
+        <input type="text" [(ngModel)]="filters.company" placeholder="Ex: Google, Microsoft..." (input)="search()">
+      </div>
+      <div class="filter-group">
+        <label>Poste</label>
+        <input type="text" [(ngModel)]="filters.job" placeholder="Ex: Software Engineer..." (input)="search()">
+      </div>
+      <div class="filter-group">
+        <label>Secteur</label>
+        <input type="text" [(ngModel)]="filters.sector" placeholder="Ex: Finance, Santé..." (input)="search()">
+      </div>
+      <div class="filter-group">
+        <label>Spécialité</label>
+        <input type="text" [(ngModel)]="filters.speciality" placeholder="Ex: Informatique..." (input)="search()">
+      </div>
+      <div class="filter-group">
+        <label>Compétence</label>
+        <input type="text" [(ngModel)]="filters.skill" placeholder="Ex: Angular, Java..." (input)="search()">
+      </div>
+    </div>
+    <div class="filters-actions">
+      <button type="button" class="btn-secondary" (click)="resetFilters()">Réinitialiser les filtres</button>
+    </div>
+  </div>
+
+  <div class="top-mentors" *ngIf="topMentors.length > 0">
+    <h2>Top mentors</h2>
+    <div class="top-mentors-grid">
+      <div class="top-mentor-card" *ngFor="let mentor of topMentors">
+        <div class="top-mentor-header">
+          <div class="avatar-placeholder">
+            <img *ngIf="mentor.avatarUrl" [src]="mentor.avatarUrl" [alt]="mentor.firstName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" />
+            <span *ngIf="!mentor.avatarUrl">{{ mentor.firstName[0] }}{{ mentor.lastName[0] }}</span>
+          </div>
+          <div>
+            <h3>{{ mentor.firstName }} {{ mentor.lastName }}</h3>
+            <p class="job-title">{{ mentor.currentJob }} &#64; {{ mentor.currentCompany }}</p>
+          </div>
+        </div>
+        <p class="expertise" *ngIf="mentor.expertise">
+          <strong>A propos:</strong> {{ mentor.expertise }}
+        </p>
+        <div class="tags">
+          <span class="tag" *ngFor="let skill of mentor.skills">{{ skill }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-section">
+    <div *ngIf="isLoading" class="loader">Chargement...</div>
+    
+    <div *ngIf="!isLoading && alumniList.length === 0" class="no-results">
+      Aucun alumni trouvé pour ces critères.
+    </div>
+
+    <div class="alumni-grid" *ngIf="!isLoading">
+      <div class="alumni-card" *ngFor="let alumni of alumniList">
+        <div class="card-header">
+          <div class="avatar-placeholder">
+            <img *ngIf="alumni.avatarUrl" [src]="alumni.avatarUrl" [alt]="alumni.firstName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" />
+            <span *ngIf="!alumni.avatarUrl">{{ alumni.firstName[0] }}{{ alumni.lastName[0] }}</span>
+          </div>
+          <div class="name-info">
+            <h3>{{ alumni.firstName }} {{ alumni.lastName }}</h3>
+            <p class="job-title">{{ alumni.currentJob }} &#64; {{ alumni.currentCompany }}</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="tags">
+            <span class="tag" *ngFor="let skill of alumni.skills">{{ skill }}</span>
+            <span class="tag specialty">{{ alumni.speciality }}</span>
+          </div>
+          <p class="expertise" *ngIf="alumni.expertise">
+            <strong>A propos:</strong> {{ alumni.expertise }}
+          </p>
+          <p class="experience" *ngIf="alumni.professionalPath">
+            <strong>Experiences professionnelles:</strong> {{ alumni.professionalPath }}
+          </p>
+        </div>
+        <div class="card-footer">
+          <button [routerLink]="['../alumni', alumni.id]" class="btn-primary">Voir Profil</button>
+          <button *ngIf="alumni.openToMentoring" [routerLink]="['../request', alumni.id]" class="btn-mentorship">Demander un mentorat</button>
+          <span class="availability" [class.open]="alumni.openToMentoring">
+            {{ alumni.openToMentoring ? 'Disponible pour mentorat' : 'Indisponible' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

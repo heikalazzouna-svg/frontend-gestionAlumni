@@ -1,0 +1,134 @@
+<div class="detail-page" *ngIf="event">
+  <!-- Banner -->
+  <div *ngIf="event.bannerUrl" class="banner-container">
+    <img [src]="event.bannerUrl" alt="Bannière" class="banner" />
+  </div>
+
+  <!-- Header -->
+  <div class="event-header">
+    <div class="header-tags">
+      <span class="type-tag">{{ typeLabel }}</span>
+      <span *ngIf="event.domain" class="domain-chip">{{ event.domain }}</span>
+      <span class="format-chip">{{ event.format }}</span>
+      <span *ngIf="event.status === 'PENDING'" class="status-chip pending">⏳ En attente</span>
+    </div>
+    <h1>{{ event.title }}</h1>
+  </div>
+
+  <!-- Info grid -->
+  <div class="info-grid">
+    <div class="info-card">
+      <span class="info-icon">📆</span>
+      <div>
+        <strong>Date</strong>
+        <p>{{ event.startDate | date:'fullDate' }} à {{ event.startDate | date:'shortTime' }}</p>
+        <p *ngIf="event.endDate" class="sub-info">Fin : {{ event.endDate | date:'mediumDate' }}</p>
+      </div>
+    </div>
+    <div class="info-card" *ngIf="event.duration">
+      <span class="info-icon">⏱</span>
+      <div>
+        <strong>Durée</strong>
+        <p>{{ event.duration }}</p>
+      </div>
+    </div>
+    <div class="info-card" *ngIf="event.location">
+      <span class="info-icon">📍</span>
+      <div>
+        <strong>Lieu</strong>
+        <p>{{ event.location }}</p>
+      </div>
+    </div>
+    <div class="info-card">
+      <span class="info-icon">🎟</span>
+      <div>
+        <strong>Places</strong>
+        <p>{{ event.registeredCount }}/{{ event.seats }} inscrits</p>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width]="progressPercent + '%'"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Virtual link -->
+  <div *ngIf="event.virtualLink" class="virtual-link-section">
+    <span class="info-icon">🔗</span>
+    <a [href]="event.virtualLink" target="_blank" rel="noopener noreferrer">Rejoindre en visioconférence</a>
+  </div>
+
+  <!-- Description -->
+  <div *ngIf="event.description" class="section">
+    <h3>Description</h3>
+    <p class="description-text">{{ event.description }}</p>
+  </div>
+
+  <!-- Speakers -->
+  <div *ngIf="speakersList.length" class="section">
+    <h3>🎤 Intervenants</h3>
+    <div class="speakers-list">
+      <span *ngFor="let s of speakersList" class="speaker-chip">{{ s }}</span>
+    </div>
+  </div>
+
+  <!-- Schedule -->
+  <div *ngIf="scheduleLines.length" class="section">
+    <h3>📋 Programme</h3>
+    <ul class="schedule-list">
+      <li *ngFor="let item of scheduleLines">{{ item }}</li>
+    </ul>
+  </div>
+
+  <!-- Prerequisites -->
+  <div *ngIf="event.prerequisites" class="section">
+    <h3>📌 Prérequis</h3>
+    <p>{{ event.prerequisites }}</p>
+  </div>
+
+  <!-- Target audience -->
+  <div *ngIf="event.targetAudience" class="section">
+    <h3>🎯 Public ciblé</h3>
+    <p>{{ event.targetAudience }}</p>
+  </div>
+
+  <!-- Companies -->
+  <div *ngIf="companiesList.length" class="section">
+    <h3>🏢 Entreprises participantes</h3>
+    <div class="companies-grid">
+      <span *ngFor="let c of companiesList" class="company-badge">{{ c }}</span>
+    </div>
+  </div>
+
+  <!-- Participants count -->
+  <div class="section" *ngIf="event.participants?.length">
+    <h3>👥 Participants ({{ event.participants?.length }})</h3>
+    <div class="participants-preview">
+      <span *ngFor="let p of event.participants | slice:0:10" class="participant-chip">
+        {{ p.firstName || p.nom }} {{ p.lastName || p.prenom }}
+      </span>
+      <span *ngIf="(event.participants?.length || 0) > 10" class="participant-more">
+        +{{ (event.participants?.length || 0) - 10 }} autres
+      </span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-section">
+    <button *ngIf="!isRegistered && currentUserId" class="btn btn-register" (click)="register()" [disabled]="registering">
+      {{ registering ? 'Inscription...' : 'S\'inscrire à cet événement' }}
+    </button>
+    <button *ngIf="isRegistered" class="btn btn-unregister" (click)="unregister()" [disabled]="registering">
+      {{ registering ? 'Annulation...' : 'Annuler mon inscription' }}
+    </button>
+    <div *ngIf="isRegistered" class="registered-badge">✅ Vous êtes inscrit(e)</div>
+    <div class="share-actions">
+      <button class="btn btn-share" (click)="shareEvent()">🔗 Partager</button>
+      <button class="btn btn-calendar" (click)="downloadCalendar()">📅 Ajouter au calendrier</button>
+    </div>
+  </div>
+</div>
+
+<div class="not-found" *ngIf="!event">
+  <span class="not-found-icon">🔭</span>
+  <p>Événement introuvable.</p>
+</div>

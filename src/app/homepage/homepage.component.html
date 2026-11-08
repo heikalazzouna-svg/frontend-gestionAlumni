@@ -1,0 +1,334 @@
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar" [class.scrolled]="isScrolled">
+  <div class="nav-container">
+    <a routerLink="/" class="nav-brand">
+      <span class="brand-icon">&#9670;</span>
+      <span class="brand-text">Edu<span class="brand-accent">Link</span></span>
+    </a>
+    <div class="nav-links">
+      <a routerLink="/" class="nav-item active">Accueil</a>
+      <a href="#explore" class="nav-item">Explorer</a>
+      <a routerLink="/events" class="nav-item">Événements</a>
+      <a routerLink="/ai-simulator" class="nav-item">Simulateur IA</a>
+      <a href="#about" class="nav-item">À propos</a>
+    </div>
+    <div class="nav-actions">
+      <a routerLink="/login" class="nav-btn-outline">Connexion</a>
+      <a routerLink="/sign-up" class="nav-btn-primary">S'inscrire</a>
+    </div>
+    <button class="mobile-toggle" (click)="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <!-- Mobile menu -->
+  <div class="mobile-menu" *ngIf="mobileMenuOpen">
+    <a routerLink="/" (click)="toggleMobileMenu()">Accueil</a>
+    <a href="#explore" (click)="toggleMobileMenu()">Explorer</a>
+    <a routerLink="/events" (click)="toggleMobileMenu()">Événements</a>
+    <a routerLink="/ai-simulator" (click)="toggleMobileMenu()">Simulateur IA</a>
+    <a href="#about" (click)="toggleMobileMenu()">À propos</a>
+    <div class="mobile-actions">
+      <a routerLink="/login" class="nav-btn-outline" (click)="toggleMobileMenu()">Connexion</a>
+      <a routerLink="/sign-up" class="nav-btn-primary" (click)="toggleMobileMenu()">S'inscrire</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO SECTION ============ -->
+<section class="hero">
+  <div class="hero-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Plateforme #1 Alumni & Carrière
+      </div>
+      <h1 class="hero-title">
+        Connecte-toi avec les <span class="gradient-text">meilleurs talents</span> d'ENICarthage
+      </h1>
+      <p class="hero-subtitle">
+        Mentorat, stages, emplois et networking — tout en un seul endroit.
+        Rejoins plus de 2 000 alumni et étudiants qui construisent leur avenir ensemble.
+      </p>
+      <div class="hero-search">
+        <div class="search-box">
+          <i class="fa fa-search search-icon"></i>
+          <input type="text" placeholder="Rechercher un stage, emploi, mentor..." class="search-input">
+          <button class="search-btn" (click)="navigateToJoinUs()">Rechercher</button>
+        </div>
+        <div class="search-tags">
+          <span class="tag">🔥 Stages PFE</span>
+          <span class="tag">💼 Premier emploi</span>
+          <span class="tag">🎓 Mentorat</span>
+          <span class="tag">🤖 Simulateur IA</span>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number">2,000+</span>
+          <span class="stat-label">Membres actifs</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">500+</span>
+          <span class="stat-label">Offres publiées</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">150+</span>
+          <span class="stat-label">Entreprises partenaires</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card card-1">
+        <div class="card-icon">🎯</div>
+        <div class="card-info">
+          <strong>Stage PFE</strong>
+          <span>12 nouvelles offres</span>
+        </div>
+      </div>
+      <div class="hero-card card-2">
+        <div class="card-icon">💬</div>
+        <div class="card-info">
+          <strong>Mentorat</strong>
+          <span>Connecté avec un alumni</span>
+        </div>
+      </div>
+      <div class="hero-card card-3">
+        <div class="card-icon">🏆</div>
+        <div class="card-info">
+          <strong>Score IA</strong>
+          <span>8.5 / 10</span>
+        </div>
+      </div>
+      <div class="hero-illustration">
+        <div class="illustration-circle"></div>
+        <div class="illustration-dots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPLORE SECTION ============ -->
+<section id="explore" class="section-explore">
+  <div class="section-container">
+    <div class="section-header-row">
+      <div class="section-tag">EXPLORER</div>
+      <h2 class="section-title">Trouve ta voie.</h2>
+      <p class="section-desc">
+        Découvre les opportunités qui correspondent à ton profil. Que tu sois étudiant en quête de stage ou alumni prêt à partager ton expérience, EduLink t'accompagne.
+      </p>
+    </div>
+    <div class="explore-grid">
+      <div class="explore-card" (click)="navigateToJoinUs()">
+        <div class="explore-icon" style="background: linear-gradient(135deg, #6C5CE7, #A29BFE);">
+          <i class="fa fa-briefcase"></i>
+        </div>
+        <h3>Stages & Emplois</h3>
+        <p>Accède aux offres exclusives partagées par les alumni et recruteurs partenaires d'ENICarthage.</p>
+        <span class="explore-link">Explorer les offres →</span>
+      </div>
+      <div class="explore-card" (click)="navigateToJoinUs()">
+        <div class="explore-icon" style="background: linear-gradient(135deg, #00B894, #55EFC4);">
+          <i class="fa fa-users"></i>
+        </div>
+        <h3>Mentorat</h3>
+        <p>Trouve un mentor alumni qui te guidera dans tes choix de carrière et ton développement professionnel.</p>
+        <span class="explore-link">Trouver un mentor →</span>
+      </div>
+      <div class="explore-card" routerLink="/events">
+        <div class="explore-icon" style="background: linear-gradient(135deg, #FDCB6E, #F39C12);">
+          <i class="fa fa-calendar"></i>
+        </div>
+        <h3>Événements</h3>
+        <p>Participe à des conférences, workshops et sessions de networking organisés par la communauté.</p>
+        <span class="explore-link">Voir les événements →</span>
+      </div>
+      <div class="explore-card" routerLink="/ai-simulator">
+        <div class="explore-icon" style="background: linear-gradient(135deg, #FF6B6B, #EE5A24);">
+          <i class="fa fa-robot"></i>
+        </div>
+        <h3>Simulateur IA</h3>
+        <p>Prépare tes entretiens avec notre simulateur d'interview propulsé par l'intelligence artificielle.</p>
+        <span class="explore-link">Lancer le simulateur →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section-how">
+  <div class="section-container">
+    <div class="section-header-row center">
+      <div class="section-tag">COMMENT ÇA MARCHE</div>
+      <h2 class="section-title">3 étapes pour démarrer</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>Crée ton compte</h3>
+        <p>Inscris-toi en tant qu'étudiant, alumni ou recruteur. C'est gratuit et prend moins d'une minute.</p>
+      </div>
+      <div class="step-connector">
+        <div class="connector-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>Complète ton profil</h3>
+        <p>Ajoute tes compétences, ton expérience et tes centres d'intérêt pour un matching optimal.</p>
+      </div>
+      <div class="step-connector">
+        <div class="connector-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>Connecte-toi</h3>
+        <p>Explore les offres, trouve un mentor ou participe à des événements. Ton réseau t'attend !</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOR WHO SECTION ============ -->
+<section class="section-roles">
+  <div class="section-container">
+    <div class="roles-grid">
+      <div class="role-card role-student">
+        <div class="role-emoji">🎓</div>
+        <h3>Étudiant ?</h3>
+        <p>Trouve des stages, des mentors et prépare tes entretiens avec l'IA. Ton réseau professionnel commence ici.</p>
+        <a routerLink="/sign-up" class="role-btn student-btn">Rejoindre en tant qu'étudiant</a>
+      </div>
+      <div class="role-card role-alumni">
+        <div class="role-emoji">🌟</div>
+        <h3>Alumni ?</h3>
+        <p>Partage ton expérience, deviens mentor et aide la prochaine génération d'ingénieurs à réussir.</p>
+        <a routerLink="/sign-up" class="role-btn alumni-btn">Rejoindre en tant qu'alumni</a>
+      </div>
+      <div class="role-card role-recruiter">
+        <div class="role-emoji">🏢</div>
+        <h3>Recruteur ?</h3>
+        <p>Accédez aux meilleurs talents d'ENICarthage. Publiez vos offres et trouvez vos futurs collaborateurs.</p>
+        <a routerLink="/sign-up" class="role-btn recruiter-btn">Recruter des talents</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT SECTION ============ -->
+<section id="about" class="section-about">
+  <div class="section-container">
+    <div class="about-layout">
+      <div class="about-text">
+        <div class="section-tag">À PROPOS</div>
+        <h2 class="section-title">EduLink, la plateforme carrière d'ENICarthage</h2>
+        <p>
+          EduLink est la plateforme dédiée qui connecte les alumni et les étudiants d'ENICarthage.
+          Notre mission est de créer un écosystème de mentorat, de networking professionnel et de
+          développement de carrière au sein de la communauté universitaire.
+        </p>
+        <p>
+          Que tu sois un étudiant à la recherche de conseils ou un alumni souhaitant donner en retour,
+          EduLink rend le networking simple et impactant.
+        </p>
+        <div class="about-features">
+          <div class="about-feature">
+            <i class="fa fa-check-circle"></i>
+            <span>Matching intelligent alumni-étudiants</span>
+          </div>
+          <div class="about-feature">
+            <i class="fa fa-check-circle"></i>
+            <span>Simulateur d'entretien IA</span>
+          </div>
+          <div class="about-feature">
+            <i class="fa fa-check-circle"></i>
+            <span>Événements exclusifs de la communauté</span>
+          </div>
+          <div class="about-feature">
+            <i class="fa fa-check-circle"></i>
+            <span>Offres de stages et emplois</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-stat-card">
+          <div class="about-stat-icon">📈</div>
+          <div class="about-stat-number">95%</div>
+          <div class="about-stat-text">de satisfaction des membres</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA SECTION ============ -->
+<section class="section-cta">
+  <div class="section-container">
+    <div class="cta-box">
+      <h2>Prêt à construire ton avenir ?</h2>
+      <p>Rejoins la communauté EduLink et accède à des milliers d'opportunités.</p>
+      <div class="cta-buttons">
+        <a routerLink="/sign-up" class="cta-btn-primary">Créer mon compte gratuitement</a>
+        <a routerLink="/login" class="cta-btn-secondary">J'ai déjà un compte</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="brand-icon">&#9670;</span>
+          <span>Edu<span class="brand-accent">Link</span></span>
+        </div>
+        <p>La plateforme carrière de la communauté ENICarthage. Connectant étudiants, alumni et recruteurs.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Plateforme</h4>
+        <a routerLink="/">Accueil</a>
+        <a routerLink="/events">Événements</a>
+        <a routerLink="/ai-simulator">Simulateur IA</a>
+        <a routerLink="/sign-up">S'inscrire</a>
+      </div>
+      <div class="footer-col">
+        <h4>Ressources</h4>
+        <a href="#about">À propos</a>
+        <a routerLink="/terms">Conditions d'utilisation</a>
+        <a routerLink="/terms">Politique de confidentialité</a>
+        <a href="http://www.enicarthage.rnu.tn/">Site de l'université</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item">
+          <i class="fa fa-map-marker-alt"></i>
+          <span>45 Rue des Entrepreneurs<br>2035 Charguiya 2, Ariana</span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fa fa-envelope"></i>
+          <span>support&#64;enicar.ucar.tn</span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fa fa-phone"></i>
+          <span>+216 99-999-999</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 EduLink. Tous droits réservés. Plateforme destinée aux alumni et étudiants d'ENICarthage.</p>
+    </div>
+  </div>
+</footer>

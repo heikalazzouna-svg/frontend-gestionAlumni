@@ -1,0 +1,386 @@
+<div class="simulator-wrapper">
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ████  CONFIG VIEW  ████ -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <ng-container *ngIf="view === 'config'">
+
+    <div class="hero">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        IA Active - Pret a vous entrainer
+      </div>
+      <h1>Simulateur d'Entretien IA</h1>
+      <p>
+        Entrainez-vous avec une IA qui joue le role du recruteur -
+        <span>Feedback instantane</span> - Progression mesuree
+      </p>
+    </div>
+
+    <div class="main-layout">
+
+      <!-- LEFT: CONFIG PANEL -->
+      <div class="glass-card config-panel">
+        <div class="config-title">
+          <div class="icon-wrap">&#x2699;&#xfe0f;</div>
+          Configurer l'entretien
+        </div>
+
+        <!-- Type de poste -->
+        <div class="field-group">
+          <span class="field-label">Type de poste *</span>
+          <select class="select-custom" [(ngModel)]="config.jobType">
+            <option value="" disabled selected hidden>-- Choisir un poste --</option>
+            <option *ngFor="let jt of jobTypes" [value]="jt.value">{{ jt.label }}</option>
+          </select>
+        </div>
+
+        <!-- Niveau -->
+        <div class="field-group">
+          <span class="field-label">Niveau *</span>
+          <select class="select-custom" [(ngModel)]="config.level">
+            <option value="" disabled selected hidden>-- Choisir un niveau --</option>
+            <option *ngFor="let lv of levels" [value]="lv.value">{{ lv.label }}</option>
+          </select>
+        </div>
+
+        <!-- Secteur -->
+        <div class="field-group">
+          <span class="field-label">Secteur d'activite</span>
+          <select class="select-custom" [(ngModel)]="config.sector">
+            <option value="" selected>-- Optionnel --</option>
+            <option *ngFor="let sec of sectors" [value]="sec.value">{{ sec.label }}</option>
+          </select>
+        </div>
+
+        <!-- Type entretien -->
+        <div class="field-group">
+          <span class="field-label">Type d'entretien</span>
+          <div class="pill-group">
+            <button type="button" class="pill" [class.active-orange]="config.interviewType === 'rh'" (click)="config.interviewType = 'rh'">👤 RH</button>
+            <button type="button" class="pill" [class.active-orange]="config.interviewType === 'tech'" (click)="config.interviewType = 'tech'">⚙️ Technique</button>
+            <button type="button" class="pill" [class.active-orange]="config.interviewType === 'mixte'" (click)="config.interviewType = 'mixte'">🔄 Mixte</button>
+            <button type="button" class="pill" [class.active-orange]="config.interviewType === 'english'" (click)="config.interviewType = 'english'">🇬🇧 English</button>
+          </div>
+        </div>
+
+        <!-- Duree -->
+        <div class="field-group">
+          <span class="field-label">Duree</span>
+          <div class="duration-group">
+            <button type="button" class="duration-pill" [class.active]="config.duration === 15" (click)="config.duration = 15">15 min</button>
+            <button type="button" class="duration-pill" [class.active]="config.duration === 30" (click)="config.duration = 30">30 min</button>
+            <button type="button" class="duration-pill" [class.active]="config.duration === 45" (click)="config.duration = 45">45 min</button>
+          </div>
+        </div>
+
+        <!-- Difficulte -->
+        <div class="field-group">
+          <span class="field-label">Difficulte</span>
+          <div class="diff-group">
+            <button type="button" class="diff-pill" [class.active]="config.difficulty === 'facile'" (click)="config.difficulty = 'facile'">🟢 Facile</button>
+            <button type="button" class="diff-pill" [class.active]="config.difficulty === 'moyen'" (click)="config.difficulty = 'moyen'">🟡 Moyen</button>
+            <button type="button" class="diff-pill" [class.active]="config.difficulty === 'difficile'" (click)="config.difficulty = 'difficile'">🔴 Difficile</button>
+          </div>
+        </div>
+
+        <div class="config-error" *ngIf="configError">{{ configError }}</div>
+
+        <button class="btn-cta" (click)="startSimulation()" [disabled]="!configValid">
+          🚀 Demarrer la simulation
+        </button>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right-col">
+
+        <!-- AI Card -->
+        <div class="ai-card">
+          <div class="ai-header">
+            <div class="ai-avatar">🤖</div>
+            <div>
+              <div class="ai-name">EduLink AI Interviewer</div>
+              <div class="ai-status">
+                <span class="ai-status-dot"></span>
+                Pret a demarrer votre simulation
+              </div>
+            </div>
+          </div>
+          <div class="ai-divider"></div>
+          <div class="ai-message">
+            Bonjour ! Je suis votre recruteur IA. Configurez les parametres de votre
+            entretien a gauche, puis cliquez sur <strong>Demarrer</strong> pour commencer
+            votre simulation.
+            <br><br>
+            Je vais vous poser des questions adaptees a votre poste, analyser vos reponses
+            et vous donner un <strong>feedback detaille</strong> pour vous aider a progresser.
+          </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card orange">
+            <div class="stat-value orange">{{ stats.simulations }}</div>
+            <div class="stat-label">Simulations realisees</div>
+          </div>
+          <div class="stat-card cyan">
+            <div class="stat-value cyan">{{ stats.average }}/100</div>
+            <div class="stat-label">Moyenne generale</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-value green">{{ stats.progress }}/8</div>
+            <div class="stat-label">Badges debloques</div>
+          </div>
+        </div>
+
+        <!-- Badges Card -->
+        <div class="glass-card badges-card">
+          <div class="badges-title">&#x1F3C6; Mes badges</div>
+          <div class="badges-grid">
+            <div class="badge-item" *ngFor="let badge of badges" [class.locked]="badge.locked" [title]="badge.locked ? 'A debloquer' : badge.name">
+              <div class="badge-icon">{{ badge.icon }}</div>
+              <div class="badge-name">{{ badge.name }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ████  INTERVIEW VIEW  ████ -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <ng-container *ngIf="view === 'interview'">
+
+    <div class="interview-wrapper">
+
+      <!-- Interview Header -->
+      <div class="interview-header">
+        <div class="interview-info">
+          <span class="interview-tag">&#x1F916; Entretien en cours</span>
+          <span class="interview-meta">{{ getJobLabel(config.jobType) }} - {{ getLevelLabel(config.level) }}</span>
+        </div>
+        <div class="interview-controls">
+          <div class="timer-badge">&#x23F1; {{ timerDisplay }}</div>
+          <button class="btn-end" (click)="endInterviewEarly()">Terminer</button>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-text">
+          Question {{ currentQuestionIndex + 1 }} / {{ questions.length }}
+          <span class="progress-pct">({{ progressPercent }}%)</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" [style.width.%]="progressPercent"></div>
+        </div>
+      </div>
+
+      <!-- Chat Area -->
+      <div class="chat-area">
+
+        <!-- AI Question Bubble -->
+        <div class="chat-bubble ai-bubble">
+          <div class="bubble-avatar">&#x1F916;</div>
+          <div class="bubble-content">
+            <div class="bubble-label">EduLink AI</div>
+            <div class="bubble-category" *ngIf="currentQuestion">
+              &#x1F4CC; {{ currentQuestion.category }}
+            </div>
+            <div class="bubble-text" *ngIf="!isAiTyping">
+              {{ aiMessage }}
+            </div>
+            <div class="typing-indicator" *ngIf="isAiTyping">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Answer Input Area -->
+        <div class="answer-area" *ngIf="!isAiTyping">
+          <div class="answer-header">
+            <span>&#x270D;&#xfe0f; Votre reponse</span>
+            <span class="word-count">{{ currentAnswer.split(' ').length - (currentAnswer ? 0 : 1) }} mots</span>
+          </div>
+          <textarea
+            class="answer-textarea"
+            [(ngModel)]="currentAnswer"
+            placeholder="Tapez votre reponse ici... Structurez avec la methode STAR pour un meilleur score."
+            rows="6"
+            [disabled]="isSubmitting"
+            (keydown.control.enter)="submitAnswer()"
+          ></textarea>
+          <div class="answer-actions">
+            <button class="btn-skip" (click)="skipQuestion()" [disabled]="isSubmitting">
+              Passer &#x23E9;
+            </button>
+            <button class="btn-submit" (click)="submitAnswer()" [disabled]="!currentAnswer.trim() || isSubmitting">
+              <span *ngIf="!isSubmitting">Soumettre &#x2705;</span>
+              <span *ngIf="isSubmitting">Analyse en cours...</span>
+            </button>
+          </div>
+          <div class="answer-hint">
+            Ctrl+Entree pour soumettre - Question {{ questionsAnswered + 1 }}/{{ questions.length }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ████  RESULTS VIEW  ████ -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <ng-container *ngIf="view === 'results'">
+
+    <div class="results-wrapper">
+
+      <!-- Results Hero -->
+      <div class="results-hero">
+        <div class="score-circle" [style.border-color]="getScoreColor(overallScore)">
+          <div class="score-number" [style.color]="getScoreColor(overallScore)">{{ overallScore }}</div>
+          <div class="score-max">/100</div>
+        </div>
+        <div class="score-info">
+          <h2>{{ getScoreLabel(overallScore) }} !</h2>
+          <p class="score-badge-level">Niveau : {{ badgeLevel }}</p>
+          <p class="score-summary">
+            {{ questionsAnswered }} questions repondues en {{ timerDisplay }}
+            - {{ getInterviewTypeLabel(config.interviewType) }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="glass-card categories-card">
+        <h3>&#x1F4CA; Scores par categorie</h3>
+        <div class="category-bars">
+          <div class="cat-bar-row">
+            <span class="cat-label">&#x1F4DD; Contenu</span>
+            <div class="cat-bar-track">
+              <div class="cat-bar-fill" [style.width.%]="categoryScores.content" [style.background]="getScoreColor(categoryScores.content)"></div>
+            </div>
+            <span class="cat-value">{{ categoryScores.content }}%</span>
+          </div>
+          <div class="cat-bar-row">
+            <span class="cat-label">&#x1F3D7; Structure</span>
+            <div class="cat-bar-track">
+              <div class="cat-bar-fill" [style.width.%]="categoryScores.structure" [style.background]="getScoreColor(categoryScores.structure)"></div>
+            </div>
+            <span class="cat-value">{{ categoryScores.structure }}%</span>
+          </div>
+          <div class="cat-bar-row">
+            <span class="cat-label">&#x2699;&#xfe0f; Technique</span>
+            <div class="cat-bar-track">
+              <div class="cat-bar-fill" [style.width.%]="categoryScores.technical" [style.background]="getScoreColor(categoryScores.technical)"></div>
+            </div>
+            <span class="cat-value">{{ categoryScores.technical }}%</span>
+          </div>
+          <div class="cat-bar-row">
+            <span class="cat-label">&#x1F91D; Soft Skills</span>
+            <div class="cat-bar-track">
+              <div class="cat-bar-fill" [style.width.%]="categoryScores.soft" [style.background]="getScoreColor(categoryScores.soft)"></div>
+            </div>
+            <span class="cat-value">{{ categoryScores.soft }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Per-Question Feedback -->
+      <div class="glass-card feedback-card">
+        <h3>&#x1F4CB; Feedback detaille par question</h3>
+
+        <div class="feedback-list">
+          <div class="feedback-item" *ngFor="let fb of feedbacks; let i = index" [class.expanded]="expandedFeedback === i">
+
+            <div class="feedback-header" (click)="toggleFeedback(i)">
+              <div class="feedback-q-num">Q{{ i + 1 }}</div>
+              <div class="feedback-q-text">{{ fb.questionText }}</div>
+              <div class="feedback-q-score" [style.color]="getScoreColor(fb.score * 10)">
+                {{ fb.score }}/10
+              </div>
+              <div class="feedback-toggle">{{ expandedFeedback === i ? '&#x25B2;' : '&#x25BC;' }}</div>
+            </div>
+
+            <div class="feedback-body" *ngIf="expandedFeedback === i">
+
+              <!-- Answer given -->
+              <div class="fb-section">
+                <div class="fb-section-title">&#x1F4AC; Votre reponse</div>
+                <div class="fb-answer">{{ fb.answerText || '(Aucune reponse)' }}</div>
+              </div>
+
+              <!-- Subscores -->
+              <div class="fb-subscores">
+                <div class="fb-subscore">
+                  <span>Contenu</span>
+                  <div class="mini-bar"><div class="mini-fill" [style.width.%]="fb.details.content * 10" [style.background]="getScoreColor(fb.details.content * 10)"></div></div>
+                  <span>{{ fb.details.content }}/10</span>
+                </div>
+                <div class="fb-subscore">
+                  <span>Structure</span>
+                  <div class="mini-bar"><div class="mini-fill" [style.width.%]="fb.details.structure * 10" [style.background]="getScoreColor(fb.details.structure * 10)"></div></div>
+                  <span>{{ fb.details.structure }}/10</span>
+                </div>
+                <div class="fb-subscore">
+                  <span>Technique</span>
+                  <div class="mini-bar"><div class="mini-fill" [style.width.%]="fb.details.technical * 10" [style.background]="getScoreColor(fb.details.technical * 10)"></div></div>
+                  <span>{{ fb.details.technical }}/10</span>
+                </div>
+                <div class="fb-subscore">
+                  <span>Soft Skills</span>
+                  <div class="mini-bar"><div class="mini-fill" [style.width.%]="fb.details.soft * 10" [style.background]="getScoreColor(fb.details.soft * 10)"></div></div>
+                  <span>{{ fb.details.soft }}/10</span>
+                </div>
+              </div>
+
+              <!-- Strengths -->
+              <div class="fb-section" *ngIf="fb.strengths.length">
+                <div class="fb-section-title strengths">&#x2705; Points forts</div>
+                <ul class="fb-list strengths">
+                  <li *ngFor="let s of fb.strengths">{{ s }}</li>
+                </ul>
+              </div>
+
+              <!-- Improvements -->
+              <div class="fb-section" *ngIf="fb.improvements.length">
+                <div class="fb-section-title improvements">&#x26A0;&#xfe0f; A ameliorer</div>
+                <ul class="fb-list improvements">
+                  <li *ngFor="let imp of fb.improvements">{{ imp }}</li>
+                </ul>
+              </div>
+
+              <!-- Suggestion -->
+              <div class="fb-section" *ngIf="fb.suggestion">
+                <div class="fb-section-title suggestion">&#x1F4A1; Suggestion</div>
+                <p class="fb-suggestion">{{ fb.suggestion }}</p>
+              </div>
+
+              <!-- Tips -->
+              <div class="fb-section" *ngIf="fb.tips.length">
+                <div class="fb-section-title tips">&#x1F4DA; Conseils</div>
+                <ul class="fb-list tips">
+                  <li *ngFor="let tip of fb.tips">{{ tip }}</li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="results-actions">
+        <button class="btn-retry" (click)="retryWithSameConfig()">&#x1F504; Recommencer</button>
+        <button class="btn-new" (click)="restartSimulation()">&#x2699;&#xfe0f; Nouveau entretien</button>
+        <a class="btn-dashboard" routerLink="/ai-dashboard">&#x1F4CA; Tableau de bord</a>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

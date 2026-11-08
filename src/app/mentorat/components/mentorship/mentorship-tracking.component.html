@@ -1,0 +1,286 @@
+<div class="tracking-page">
+  <!-- Success Toast -->
+  <div class="toast" *ngIf="successMessage" [@fadeInOut]>
+    <span class="toast-icon">✓</span> {{ successMessage }}
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Chargement de vos mentorats...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && requests.length === 0">
+    <div class="empty-icon">🎓</div>
+    <h2>Aucun mentorat en cours</h2>
+    <p>Trouvez un mentor alumni et envoyez votre première demande de mentorat pour commencer votre parcours d'accompagnement.</p>
+    <a [routerLink]="['../matching']" class="btn-primary">Trouver un Mentor</a>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="tracking-layout" *ngIf="!isLoading && requests.length > 0">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Mes Mentorats</h2>
+        <span class="badge-count">{{ requests.length }}</span>
+      </div>
+      <div class="request-list">
+        <div class="request-item"
+             *ngFor="let req of requests"
+             [class.active]="selectedRequest?.id === req.id"
+             (click)="selectRequest(req)">
+          <div class="req-avatar">
+            {{ isAlumni() ? (req.student?.firstName?.[0] || 'E') : (req.proposer?.firstName?.[0] || 'M') }}
+          </div>
+          <div class="req-info">
+            <h4>{{ req.title }}</h4>
+            <p class="req-partner">
+              {{ isAlumni() ? (req.student?.firstName + ' ' + req.student?.lastName) : (req.proposer?.firstName + ' ' + req.proposer?.lastName) }}
+            </p>
+          </div>
+          <span class="status-dot" [ngClass]="req.status?.toLowerCase()"></span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Panel -->
+    <main class="main-panel" *ngIf="selectedRequest">
+      <!-- Header -->
+      <div class="panel-header">
+        <div class="header-top">
+          <div>
+            <h1>{{ selectedRequest.title }}</h1>
+            <p class="header-meta">
+              <span class="status-badge" [ngClass]="selectedRequest.status?.toLowerCase()">{{ selectedRequest.status }}</span>
+              <span class="category-badge" *ngIf="selectedRequest.category">{{ selectedRequest.category }}</span>
+              <span class="partner-name">{{ getPartnerLabel() }}: <strong>{{ getMentorName() }}</strong></span>
+            </p>
+          </div>
+          <div class="header-actions" *ngIf="selectedRequest.status === 'PENDING' && isAlumni()">
+            <button class="btn-accept" (click)="acceptRequest()">✓ Accepter</button>
+            <button class="btn-reject" (click)="rejectRequest()">✗ Refuser</button>
+          </div>
+          <div class="header-actions" *ngIf="selectedRequest.status === 'ACCEPTED'">
+            <button class="btn-complete" (click)="completeRequest()">✓ Terminer</button>
+            <button class="btn-cancel" (click)="cancelRequest()">Annuler</button>
+          </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-value">{{ totalSessions }}</div>
+            <div class="stat-label">Sessions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ goalProgress }}%</div>
+            <div class="stat-label">Objectifs</div>
+            <div class="stat-bar"><div class="stat-fill" [style.width.%]="goalProgress"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ daysRemaining }}j</div>
+            <div class="stat-label">Restants</div>
+            <div class="stat-bar"><div class="stat-fill duration" [style.width.%]="durationProgress"></div></div>
+          </div>
+          <div class="stat-card" *ngIf="evaluations.length > 0">
+            <div class="stat-value">{{ averageRating }}<span class="stat-star">★</span></div>
+            <div class="stat-label">Note moyenne</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab" [class.active]="activeTab === 'info'" (click)="activeTab = 'info'">Informations</button>
+        <button class="tab" [class.active]="activeTab === 'sessions'" (click)="activeTab = 'sessions'">Sessions <span class="tab-count">{{ sessions.length }}</span></button>
+        <button class="tab" [class.active]="activeTab === 'goals'" (click)="activeTab = 'goals'">Objectifs <span class="tab-count">{{ completedGoals }}/{{ goals.length }}</span></button>
+        <button class="tab" [class.active]="activeTab === 'evaluation'" (click)="activeTab = 'evaluation'">Évaluation</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+
+        <!-- Info Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'info'">
+          <div class="info-grid">
+            <div class="info-block">
+              <h3>📋 Détails</h3>
+              <p *ngIf="selectedRequest.details">{{ selectedRequest.details }}</p>
+              <p *ngIf="selectedRequest.message && !selectedRequest.details">{{ selectedRequest.message }}</p>
+            </div>
+            <div class="info-block">
+              <h3>🎯 Objectifs</h3>
+              <p>{{ selectedRequest.objectives || 'Non définis' }}</p>
+            </div>
+            <div class="info-block">
+              <h3>📅 Durée</h3>
+              <p><strong>Durée prévue:</strong> {{ selectedRequest.duration || 'Non définie' }}</p>
+              <p *ngIf="selectedRequest.startDate"><strong>Début:</strong> {{ selectedRequest.startDate }}</p>
+              <p *ngIf="selectedRequest.endDate"><strong>Fin:</strong> {{ selectedRequest.endDate }}</p>
+              <div class="duration-bar" *ngIf="selectedRequest.startDate && selectedRequest.endDate">
+                <div class="duration-fill" [style.width.%]="durationProgress"></div>
+                <span class="duration-label">{{ durationProgress }}% du temps écoulé</span>
+              </div>
+            </div>
+            <div class="info-block" *ngIf="selectedRequest.category">
+              <h3>🏷️ Catégorie</h3>
+              <span class="category-tag">{{ selectedRequest.category }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sessions Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'sessions'">
+          <div class="section-header">
+            <h3>Sessions de suivi</h3>
+            <button class="btn-add" (click)="showSessionForm = !showSessionForm" *ngIf="selectedRequest.status === 'ACCEPTED'">
+              {{ showSessionForm ? '✕ Fermer' : '+ Nouvelle Session' }}
+            </button>
+          </div>
+
+          <!-- Session Form -->
+          <div class="add-form" *ngIf="showSessionForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date de la session</label>
+                <input type="datetime-local" [(ngModel)]="newSession.sessionDate">
+              </div>
+              <div class="form-group">
+                <label>Durée (minutes)</label>
+                <input type="number" [(ngModel)]="newSession.duration" min="15" step="15">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Sujet abordé</label>
+              <input type="text" [(ngModel)]="newSession.topic" placeholder="Ex: Révision de CV, Simulation d'entretien...">
+            </div>
+            <div class="form-group">
+              <label>Résumé de la session</label>
+              <textarea [(ngModel)]="newSession.summary" rows="3" placeholder="Ce qui a été discuté et les points clés..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Prochaines étapes</label>
+              <textarea [(ngModel)]="newSession.nextSteps" rows="2" placeholder="Actions à faire avant la prochaine session..."></textarea>
+            </div>
+            <button class="btn-primary" (click)="addSession()" [disabled]="!newSession.topic">Enregistrer la session</button>
+          </div>
+
+          <!-- Timeline -->
+          <div class="timeline" *ngIf="sessions.length > 0">
+            <div class="timeline-item" *ngFor="let s of sessions; let i = index">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card">
+                <div class="timeline-header">
+                  <span class="timeline-date">{{ s.sessionDate | date:'dd MMM yyyy, HH:mm' }}</span>
+                  <span class="session-duration" *ngIf="s.duration">{{ s.duration }} min</span>
+                </div>
+                <h4>{{ s.topic }}</h4>
+                <p *ngIf="s.summary"><strong>Résumé:</strong> {{ s.summary }}</p>
+                <p *ngIf="s.nextSteps" class="next-steps"><strong>Prochaines étapes:</strong> {{ s.nextSteps }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-tab" *ngIf="sessions.length === 0 && !showSessionForm">
+            <p>Aucune session enregistrée. Ajoutez votre première session de suivi.</p>
+          </div>
+        </div>
+
+        <!-- Goals Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'goals'">
+          <div class="section-header">
+            <h3>Objectifs du mentorat</h3>
+            <button class="btn-add" (click)="showGoalForm = !showGoalForm" *ngIf="selectedRequest.status === 'ACCEPTED'">
+              {{ showGoalForm ? '✕ Fermer' : '+ Nouvel Objectif' }}
+            </button>
+          </div>
+
+          <!-- Goal Form -->
+          <div class="add-form" *ngIf="showGoalForm">
+            <div class="form-group">
+              <label>Description de l'objectif</label>
+              <input type="text" [(ngModel)]="newGoal.description" placeholder="Ex: Maîtriser les design patterns en Java">
+            </div>
+            <button class="btn-primary" (click)="addGoal()" [disabled]="!newGoal.description">Ajouter l'objectif</button>
+          </div>
+
+          <!-- Goals Progress -->
+          <div class="goals-progress" *ngIf="goals.length > 0">
+            <div class="progress-header">
+              <span>{{ completedGoals }} / {{ goals.length }} objectifs complétés</span>
+              <span class="progress-pct">{{ goalProgress }}%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" [style.width.%]="goalProgress"></div></div>
+          </div>
+
+          <!-- Goals List -->
+          <div class="goals-list">
+            <div class="goal-item" *ngFor="let goal of goals" [ngClass]="goal.status?.toLowerCase().replace('_', '-')">
+              <button class="goal-check" (click)="cycleGoalStatus(goal)" [ngClass]="goal.status?.toLowerCase().replace('_', '-')">
+                <span *ngIf="goal.status === 'COMPLETED'">✓</span>
+                <span *ngIf="goal.status === 'IN_PROGRESS'">◐</span>
+                <span *ngIf="goal.status === 'NOT_STARTED'">&nbsp;</span>
+              </button>
+              <div class="goal-content">
+                <p [class.completed]="goal.status === 'COMPLETED'">{{ goal.description }}</p>
+                <span class="goal-status-label" [ngClass]="goal.status?.toLowerCase().replace('_', '-')">{{ getGoalStatusLabel(goal.status) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-tab" *ngIf="goals.length === 0 && !showGoalForm">
+            <p>Aucun objectif défini. Ajoutez des objectifs pour suivre votre progression.</p>
+          </div>
+        </div>
+
+        <!-- Evaluation Tab -->
+        <div class="tab-pane" *ngIf="activeTab === 'evaluation'">
+          <div class="section-header">
+            <h3>Évaluations</h3>
+            <button class="btn-add" (click)="showEvalForm = !showEvalForm"
+                    *ngIf="selectedRequest.status === 'ACCEPTED' || selectedRequest.status === 'COMPLETED'">
+              {{ showEvalForm ? '✕ Fermer' : '+ Nouvelle Évaluation' }}
+            </button>
+          </div>
+
+          <!-- Eval Form -->
+          <div class="add-form eval-form" *ngIf="showEvalForm">
+            <div class="form-group">
+              <label>Note</label>
+              <div class="star-rating">
+                <span class="star" *ngFor="let s of [1,2,3,4,5]"
+                      [class.filled]="s <= newEvaluation.rating"
+                      (click)="setRating(s)">★</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Votre avis</label>
+              <textarea [(ngModel)]="newEvaluation.comment" rows="4" placeholder="Décrivez votre expérience de mentorat..."></textarea>
+            </div>
+            <button class="btn-primary" (click)="submitEvaluation()" [disabled]="!newEvaluation.comment">Envoyer l'évaluation</button>
+          </div>
+
+          <!-- Existing Evaluations -->
+          <div class="evaluations-list" *ngIf="evaluations.length > 0">
+            <div class="eval-card" *ngFor="let e of evaluations">
+              <div class="eval-header">
+                <div class="eval-stars">
+                  <span class="star filled" *ngFor="let s of getStars(e.rating); let i = index" [class.filled]="s === 1">★</span>
+                </div>
+                <span class="eval-role">{{ e.evaluatorRole === 'MENTOR' ? 'Par le Mentor' : 'Par le Mentoré' }}</span>
+              </div>
+              <p class="eval-comment">{{ e.comment }}</p>
+            </div>
+          </div>
+
+          <div class="empty-tab" *ngIf="evaluations.length === 0 && !showEvalForm">
+            <p>Aucune évaluation pour le moment. Partagez votre avis sur l'accompagnement.</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>

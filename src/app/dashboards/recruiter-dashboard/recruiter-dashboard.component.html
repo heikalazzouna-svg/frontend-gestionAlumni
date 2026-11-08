@@ -1,0 +1,73 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <div class="sidebar-header">
+      <a routerLink="/" class="sidebar-brand" *ngIf="!isSidebarCollapsed">
+        <span class="brand-icon">&#9670;</span>
+        <span>Edu<span class="accent">Link</span></span>
+      </a>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <i class="fas" [class.fa-chevron-left]="!isSidebarCollapsed" [class.fa-chevron-right]="isSidebarCollapsed"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/recruiter/home" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-th-large"></i>
+        <span *ngIf="!isSidebarCollapsed">Tableau de bord</span>
+      </a>
+      <a routerLink="/recruiter/offers" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-plus-circle"></i>
+        <span *ngIf="!isSidebarCollapsed">Gérer mes Offres</span>
+      </a>
+      <a routerLink="/recruiter/applications" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-inbox"></i>
+        <span *ngIf="!isSidebarCollapsed">Candidatures</span>
+        <span class="notif-badge" *ngIf="notifService.counts.candidatures > 0">{{ notifService.counts.candidatures }}</span>
+      </a>
+      <a routerLink="/recruiter/events" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span *ngIf="!isSidebarCollapsed">Événements</span>
+      </a>
+      <a routerLink="/recruiter/search" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-search"></i>
+        <span *ngIf="!isSidebarCollapsed">Chercher Talents</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="!isSidebarCollapsed">
+        <div class="user-avatar recruiter">
+          <img *ngIf="currentUser?.avatarUrl" [src]="currentUser?.avatarUrl" [alt]="currentUser?.firstName" class="sidebar-avatar-img" />
+          <span *ngIf="!currentUser?.avatarUrl">{{ currentUser?.firstName?.charAt(0) }}{{ currentUser?.lastName?.charAt(0) }}</span>
+        </div>
+        <div class="user-details">
+          <p class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</p>
+          <p class="user-role">Recruteur</p>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span *ngIf="!isSidebarCollapsed">Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="top-header">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Rechercher des candidats, des profils...">
+      </div>
+      <app-user-menu
+        [user]="currentUser"
+        [notificationCount]="notifService.counts.candidatures">
+      </app-user-menu>
+    </header>
+
+    <section class="content-area">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

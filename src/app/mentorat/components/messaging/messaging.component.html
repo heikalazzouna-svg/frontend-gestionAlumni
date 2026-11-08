@@ -1,0 +1,204 @@
+<div class="messaging-layout">
+  <!-- Sidebar: Conversation List -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>Messagerie</h2>
+      @if (unreadTotal() > 0) {
+        <span class="total-badge">{{ unreadTotal() }}</span>
+      }
+    </div>
+
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Rechercher..." [(ngModel)]="searchQuery" />
+    </div>
+
+    @if (loading()) {
+      <div class="sidebar-loading">
+        <div class="spinner"></div>
+      </div>
+    }
+
+    <div class="conversation-list">
+      @for (conv of filteredConversations(); track conv.conversationId) {
+        <div
+          class="conversation-item"
+          [class.active]="activeConversation()?.conversationId === conv.conversationId"
+          (click)="selectConversation(conv)">
+          <div class="conv-avatar">
+            <img *ngIf="conv.otherUser.avatarUrl" [src]="conv.otherUser.avatarUrl" [alt]="conv.otherUser.firstName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" />
+            <span *ngIf="!conv.otherUser.avatarUrl">{{ getInitials(conv.otherUser) }}</span>
+          </div>
+          <div class="conv-info">
+            <div class="conv-top-row">
+              <span class="conv-name">{{ conv.otherUser.firstName }} {{ conv.otherUser.lastName }}</span>
+              <span class="conv-time">{{ formatTime(conv.lastMessageAt) }}</span>
+            </div>
+            <div class="conv-bottom-row">
+              <span class="conv-last-msg">{{ conv.lastMessage || 'Aucun message' }}</span>
+              @if (conv.unreadCount > 0) {
+                <span class="unread-badge">{{ conv.unreadCount }}</span>
+              }
+            </div>
+            @if (conv.tags) {
+              <div class="conv-tags">
+                @for (tag of conv.tags.split(','); track tag) {
+                  <span class="tag-chip">{{ tag.trim() }}</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (!loading() && filteredConversations().length === 0) {
+        <div class="no-conversations">
+          <p>Aucune conversation</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat-area">
+    @if (activeConversation()) {
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="header-avatar">
+            <img *ngIf="activeConversation()!.otherUser.avatarUrl" [src]="activeConversation()!.otherUser.avatarUrl" [alt]="activeConversation()!.otherUser.firstName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" />
+            <span *ngIf="!activeConversation()!.otherUser.avatarUrl">{{ getInitials(activeConversation()!.otherUser) }}</span>
+          </div>
+          <div>
+            <h3>{{ activeConversation()!.otherUser.firstName }} {{ activeConversation()!.otherUser.lastName }}</h3>
+            @if (typingUser()) {
+              <span class="typing-indicator">{{ typingUser() }} est en train d'écrire...</span>
+            }
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <!-- Tags -->
+          @if (editingTags()) {
+            <div class="tag-edit">
+              <input type="text" [(ngModel)]="tagInput" placeholder="Tags (séparés par des virgules)" (keyup.enter)="saveTags()" />
+              <button (click)="saveTags()" class="btn-icon" title="Sauvegarder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </button>
+            </div>
+          } @else {
+            <button (click)="startEditTags()" class="btn-icon" title="Tags">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
+                <path d="M6 6h.008v.008H6V6z"/>
+              </svg>
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (activeConversation()!.tags && !editingTags()) {
+        <div class="active-tags">
+          @for (tag of activeConversation()!.tags.split(','); track tag) {
+            <span class="tag-chip">{{ tag.trim() }}</span>
+          }
+        </div>
+      }
+
+      <!-- Messages -->
+      <div class="message-list" #messageContainer>
+        @for (msg of messages(); track msg.id || $index) {
+          <div class="message-wrapper" [class.own]="msg.sender.id === currentUser?.id">
+            <div class="message-bubble">
+              @if (msg.sender.id !== currentUser?.id) {
+                <span class="msg-sender">{{ msg.sender.firstName }}</span>
+              }
+              @if (msg.attachmentUrl) {
+                <div class="attachment">
+                  @if (msg.fileType === 'IMAGE') {
+                    <img [src]="msg.attachmentUrl" [alt]="msg.fileName" class="msg-image" />
+                  } @else {
+                    <a [href]="msg.attachmentUrl" target="_blank" class="file-link">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/>
+                      </svg>
+                      <span>{{ msg.fileName }}</span>
+                    </a>
+                  }
+                </div>
+              }
+              <p class="msg-text">{{ msg.content }}</p>
+              <span class="msg-time">{{ formatTime(msg.sentDate) }}</span>
+            </div>
+          </div>
+        }
+
+        @if (messages().length === 0) {
+          <div class="no-messages">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon">
+              <path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/>
+            </svg>
+            <p>Commencez la conversation !</p>
+          </div>
+        }
+      </div>
+
+      <!-- Typing indicator -->
+      @if (typingUser()) {
+        <div class="typing-bar">
+          <span class="typing-dots"><span></span><span></span><span></span></span>
+          {{ typingUser() }} est en train d'écrire...
+        </div>
+      }
+
+      <!-- Input area -->
+      <div class="input-area">
+        <!-- Emoji picker -->
+        @if (showEmojiPicker()) {
+          <div class="emoji-picker">
+            @for (emoji of emojis; track emoji) {
+              <button class="emoji-btn" (click)="addEmoji(emoji)">{{ emoji }}</button>
+            }
+          </div>
+        }
+
+        <div class="input-row">
+          <button (click)="toggleEmojiPicker()" class="btn-icon" title="Emojis">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"/>
+            </svg>
+          </button>
+
+          <label class="btn-icon file-label" title="Pièce jointe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/>
+            </svg>
+            <input type="file" (change)="onFileSelected($event)" hidden />
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMessage"
+            (keyup.enter)="sendMessage()"
+            (input)="onTyping()"
+            placeholder="Tapez votre message..."
+            class="message-input"
+          />
+
+          <button (click)="sendMessage()" class="btn-send" [disabled]="!newMessage.trim()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    } @else {
+      <!-- No conversation selected -->
+      <div class="no-selection">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon">
+          <path d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"/>
+        </svg>
+        <h3>Sélectionnez une conversation</h3>
+        <p>Choisissez une conversation dans la liste ou démarrez-en une nouvelle</p>
+      </div>
+    }
+  </div>
+</div>

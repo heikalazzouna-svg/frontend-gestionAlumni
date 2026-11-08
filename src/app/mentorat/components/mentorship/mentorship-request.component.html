@@ -1,0 +1,101 @@
+<div class="request-page">
+  <!-- Success State -->
+  <div class="success-container" *ngIf="submitted">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      <h2>Demande envoyée avec succès !</h2>
+      <p>Votre demande de mentorat a été envoyée à <strong>{{ alumni?.firstName }} {{ alumni?.lastName }}</strong>. Vous serez notifié dès que votre demande sera acceptée.</p>
+      <div class="success-actions">
+        <button class="btn-primary" (click)="goToTracking()">Suivre mes mentorats</button>
+        <button class="btn-secondary" (click)="goBack()">Retour</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="form-container" *ngIf="!submitted">
+    <div class="form-header">
+      <button class="btn-back" (click)="goBack()">← Retour</button>
+      <h1>Demande de Mentorat</h1>
+      <p>Envoyez une demande formelle pour être accompagné par un alumni expert</p>
+    </div>
+
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Chargement du profil...</p>
+    </div>
+
+    <div class="form-content" *ngIf="!isLoading && alumni">
+      <!-- Mentor Info Card -->
+      <div class="mentor-card">
+        <div class="mentor-avatar">
+          <img *ngIf="alumni.avatarUrl" [src]="alumni.avatarUrl" [alt]="alumni.firstName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" />
+          <span *ngIf="!alumni.avatarUrl">{{ alumni.firstName?.[0] }}{{ alumni.lastName?.[0] }}</span>
+        </div>
+        <div class="mentor-info">
+          <h3>{{ alumni.firstName }} {{ alumni.lastName }}</h3>
+          <p class="mentor-job">{{ alumni.currentJob }} &#64; {{ alumni.currentCompany }}</p>
+          <div class="mentor-tags">
+            <span class="tag" *ngFor="let skill of alumni.skills?.slice(0, 4)">{{ skill }}</span>
+          </div>
+        </div>
+        <span class="badge-mentor">Mentor</span>
+      </div>
+
+      <!-- Form Fields -->
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="title">Titre de la demande <span class="required">*</span></label>
+          <input id="title" type="text" [(ngModel)]="request.title" placeholder="Ex: Accompagnement en développement backend" />
+        </div>
+
+        <div class="form-group">
+          <label for="category">Catégorie <span class="required">*</span></label>
+          <select id="category" [(ngModel)]="request.category">
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="duration">Durée souhaitée</label>
+          <select id="duration" [(ngModel)]="request.duration">
+            <option *ngFor="let dur of durations" [value]="dur">{{ dur }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="startDate">Date de début</label>
+          <input id="startDate" type="date" [(ngModel)]="request.startDate" />
+        </div>
+
+        <div class="form-group">
+          <label for="endDate">Date de fin</label>
+          <input id="endDate" type="date" [(ngModel)]="request.endDate" />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="objectives">Objectifs du mentorat <span class="required">*</span></label>
+          <textarea id="objectives" [(ngModel)]="request.objectives" rows="4" placeholder="Décrivez vos objectifs : quelles compétences souhaitez-vous développer ? Quels sont vos défis actuels ?"></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="message">Message personnel <span class="required">*</span></label>
+          <textarea id="message" [(ngModel)]="request.message" rows="4" placeholder="Présentez-vous et expliquez pourquoi vous souhaitez être accompagné par ce mentor."></textarea>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn-secondary" (click)="goBack()">Annuler</button>
+        <button class="btn-primary" (click)="submitRequest()" [disabled]="isSubmitting || !request.title || !request.message || !request.objectives">
+          <span *ngIf="!isSubmitting">Envoyer la demande</span>
+          <span *ngIf="isSubmitting">Envoi en cours...</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="no-alumni" *ngIf="!isLoading && !alumni">
+      <p>Impossible de charger le profil du mentor.</p>
+      <button class="btn-secondary" (click)="goBack()">Retour</button>
+    </div>
+  </div>
+</div>

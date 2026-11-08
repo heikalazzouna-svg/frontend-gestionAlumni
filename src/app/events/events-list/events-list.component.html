@@ -1,0 +1,172 @@
+<div class="events-page">
+
+  <!-- ===== HERO BANNER ===== -->
+  <section class="hero-section">
+    <div class="hero-bg-orb orb1"></div>
+    <div class="hero-bg-orb orb2"></div>
+    <div class="hero-bg-orb orb3"></div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">📅 Calendrier</span>
+      <h1 class="hero-title">Événements <span class="hero-accent">&amp; Forums</span></h1>
+      <p class="hero-subtitle">Forums entreprises, hackathons, conférences et ateliers · <strong>{{ events.length }}</strong> événements à venir</p>
+      <div class="search-bar" role="search">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input [(ngModel)]="search" (ngModelChange)="applyFilters()" placeholder="Rechercher un événement…" class="search-input" aria-label="Rechercher un événement" />
+        <button *ngIf="search" class="search-clear" (click)="search='';applyFilters()" aria-label="Effacer la recherche">✕</button>
+      </div>
+      <a *ngIf="canCreate" routerLink="create" class="btn-hero-create">+ Créer un événement</a>
+    </div>
+  </section>
+
+  <!-- ===== STATS ROW ===== -->
+  <section class="stats-section">
+    <div class="section-container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">📅</span>
+          <div class="stat-value">{{ events.length }}</div>
+          <div class="stat-label">Événements</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🏢</span>
+          <div class="stat-value">{{ eventTypes.length }}</div>
+          <div class="stat-label">Catégories</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🌐</span>
+          <div class="stat-value">{{ onlineCount }}</div>
+          <div class="stat-label">En ligne</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🎟️</span>
+          <div class="stat-value">{{ totalSeats }}</div>
+          <div class="stat-label">Places totales</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FILTER CHIPS ===== -->
+  <section class="filters-section">
+    <div class="section-container">
+      <div class="filters-inner">
+        <span class="filter-label">Filtrer par :</span>
+        <div class="chip-row">
+          <button class="chip" [class.active]="!typeFilter && !formatFilter" (click)="typeFilter='';formatFilter='';applyFilters()">Tous</button>
+          <button *ngFor="let t of eventTypes" class="chip" [class.active]="typeFilter===t" (click)="typeFilter=t;formatFilter='';applyFilters()">
+            {{ iconForType(t) }} {{ labelForType(t) }}
+          </button>
+          <button class="chip chip-online" [class.active]="formatFilter==='distanciel'" (click)="formatFilter='distanciel';typeFilter='';applyFilters()">🌐 En ligne</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED EVENT ===== -->
+  <section class="featured-section" *ngIf="featuredEvent() as fe">
+    <div class="section-container">
+      <div class="featured-card" (click)="goToDetail(fe.id)">
+        <div class="featured-glow" [style.background]="colorForType(fe.type)"></div>
+        <div class="featured-left">
+          <div class="featured-top-row">
+            <span class="badge-featured">⭐ À LA UNE</span>
+            <span class="badge-type" [style.background]="colorForType(fe.type)+'22'" [style.color]="colorForType(fe.type)" [style.border-color]="colorForType(fe.type)+'66'">
+              {{ iconForType(fe.type) }} {{ labelForType(fe.type) }}
+            </span>
+          </div>
+          <h2 class="featured-title">{{ fe.title }}</h2>
+          <p class="featured-desc">{{ fe.description }}</p>
+          <div class="featured-meta">
+            <span class="meta-pill">📆 {{ fe.startDate | date:'longDate' }}</span>
+            <span class="meta-pill">📍 {{ fe.location }}</span>
+            <span class="meta-pill">🎟️ {{ fe.registeredCount }}/{{ fe.seats }} places</span>
+          </div>
+          <div class="featured-progress">
+            <div class="progress-track">
+              <div class="progress-fill-featured" [style.width]="progressPercent(fe)+'%'" [style.background]="colorForType(fe.type)"></div>
+            </div>
+            <span class="progress-pct">{{ progressPercent(fe) }}% des places réservées</span>
+          </div>
+          <div class="featured-actions">
+            <button class="btn-register" [style.background]="colorForType(fe.type)" (click)="$event.stopPropagation(); goToDetail(fe.id)">
+              Voir les détails →
+            </button>
+            <span class="btn-info">{{ fe.format }}</span>
+          </div>
+        </div>
+        <div class="featured-right">
+          <div class="featured-icon-ring" [style.border-color]="colorForType(fe.type)+'55'">
+            <span class="featured-icon">{{ iconForType(fe.type) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EVENTS GRID ===== -->
+  <section class="cards-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Prochains événements</h2>
+        <span class="result-count">{{ filtered.length }} résultat{{ filtered.length !== 1 ? 's' : '' }}</span>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="filtered.length === 0" class="empty-state">
+        <div class="empty-icon">🔭</div>
+        <h3>Aucun événement trouvé</h3>
+        <p>Essayez de modifier vos filtres de recherche.</p>
+        <button class="btn-reset" (click)="clearFilters()">Réinitialiser les filtres</button>
+      </div>
+
+      <div class="events-grid">
+        <!-- Event cards -->
+        <div *ngFor="let e of filtered; trackBy: trackByEventId" class="event-card" (click)="goToDetail(e.id)">
+          <div class="card-banner" [style.background]="'linear-gradient(145deg,'+colorForType(e.type)+','+colorForType(e.type)+'77)'">
+            <span class="card-banner-icon">{{ iconForType(e.type) }}</span>
+            <span class="card-format-tag">{{ e.format }}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-tags">
+              <span class="tag-type"
+                [style.background]="colorForType(e.type)+'1a'"
+                [style.color]="colorForType(e.type)"
+                [style.border-color]="colorForType(e.type)+'44'">
+                {{ labelForType(e.type) }}
+              </span>
+            </div>
+            <h3 class="card-title">{{ e.title }}</h3>
+            <p class="card-desc">{{ (e.description || '') | slice:0:90 }}{{ (e.description || '').length > 90 ? '…' : '' }}</p>
+            <div class="card-meta">
+              <div class="meta-item">📆 {{ e.startDate | date:'mediumDate' }}</div>
+              <div class="meta-item">📍 {{ e.location }}</div>
+            </div>
+            <div class="card-progress">
+              <div class="progress-track-sm">
+                <div class="progress-fill" [style.width]="progressPercent(e)+'%'" [style.background]="colorForType(e.type)"></div>
+              </div>
+              <span class="progress-text">{{ e.registeredCount }}/{{ e.seats }} places</span>
+            </div>
+            <button class="card-btn" [style.background]="colorForType(e.type)" (click)="$event.stopPropagation(); goToDetail(e.id)">
+              Voir →
+            </button>
+          </div>
+        </div>
+
+        <!-- Create CTA card -->
+        <div *ngIf="canCreate" class="event-card recruiter-card" (click)="router.navigate(['create'], { relativeTo: route })">
+          <div class="card-banner recruiter-banner">
+            <span class="recruiter-plus">+</span>
+          </div>
+          <div class="card-body recruiter-body">
+            <div class="recruiter-icon">🏢</div>
+            <h3 class="card-title">Créer un événement</h3>
+            <p class="card-desc">Ajoutez un nouvel événement et rencontrez les meilleurs talents.</p>
+            <button class="btn-create">Créer →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

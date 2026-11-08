@@ -1,0 +1,105 @@
+.experience-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  position: relative;
+}
+
+.tabs button.active {
+  color: #4a90e2;
+}
+
+.tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #4a90e2;
+}
+
+.search-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #e0e0e0;
+}
+
+.review-card, .kb-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+  border: 1px solid #f0f0f0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.rating {
+  background: #fff9db;
+  color: #f08c00;
+  padding: 0.3rem 0.8rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.review-grid h4 {
+  color: #4a90e2;
+  margin-bottom: 0.5rem;
+}
+
+.post-form {
+  background: white;
+  padding: 3rem;
+  border-radius: 25px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+
+.form-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.form-grid textarea {
+  height: 100px;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #eee;
+}

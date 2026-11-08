@@ -1,0 +1,158 @@
+<div class="profile-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="profile-header">
+      <div class="avatar-container">
+        <img [src]="user.logo ? 'data:image/png;base64,' + user.logo : '/profileimg.svg'" alt="Profile Avatar" class="profile-avatar">
+      </div>
+      <h2 class="profile-name">
+        {{ userType === 'recruiter' ? user.companyName : (user.firstName + ' ' + user.lastName) }}
+      </h2>
+      <p class="user-type">{{ userType | titlecase }}</p>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+    
+    <ul class="profile-details">
+      <!-- Common for Student/Alumni -->
+      <li *ngIf="userType !== 'recruiter'"><strong>Specialty:</strong> {{ user.speciality || 'Not specified' }}</li>
+      
+      <!-- Student Specific -->
+      <li *ngIf="userType === 'student'"><strong>Predicted Grad:</strong> {{ user.predictedGradYear || 'NA' }}</li>
+      <li *ngIf="userType === 'student'"><strong>Status:</strong> {{ user.searchType || 'Exploring' }}</li>
+      
+      <!-- Alumni Specific -->
+      <li *ngIf="userType === 'alumni'"><strong>Graduation Year:</strong> {{ user.graduationYear }}</li>
+      <li *ngIf="userType === 'alumni'"><strong>Company:</strong> {{ user.currentCompany || 'Freelance' }}</li>
+      
+      <!-- Recruiter Specific -->
+      <li *ngIf="userType === 'recruiter'"><strong>Sector:</strong> {{ user.sector }}</li>
+      <li *ngIf="userType === 'recruiter'"><strong>Location:</strong> {{ user.location }}</li>
+      <li *ngIf="userType === 'recruiter'"><strong>Contact:</strong> {{ user.contact }}</li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-nav">
+      <div class="breadcrumb">Profile / {{ userType | titlecase }}</div>
+      <div class="nav-icons">
+        <img src="/home.svg" alt="Home" routerLink="/">
+        <img src="/messages-icon.png" alt="Messages">
+        <img src="/person-outline.svg" alt="Profile" class="active">
+      </div>
+    </div>
+
+    <!-- Status Message -->
+    <div class="status-message" *ngIf="message" [class.error]="message.includes('Failed')">
+      {{ message }}
+    </div>
+
+    <!-- Dynamic Section based on Role -->
+    <div class="profile-sections">
+      
+      <!-- Student Profile Sections -->
+      <div *ngIf="userType === 'student'" class="card">
+        <div class="card-header">
+          <h3>Professional Profile</h3>
+          <div class="action-buttons">
+            <button class="edit-btn" *ngIf="!isEditing" (click)="toggleEdit()">Edit</button>
+            <button class="save-btn" *ngIf="isEditing" (click)="saveProfile()">Save</button>
+            <button class="cancel-btn" *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="info-group">
+            <label>Skills</label>
+            <p *ngIf="!isEditing">{{ user.skills || 'Add your skills (e.g. Java, Angular, Python)' }}</p>
+            <input *ngIf="isEditing" [(ngModel)]="editData.skills" placeholder="Skills (comma separated)">
+          </div>
+          <div class="info-group">
+            <label>Experience</label>
+            <p *ngIf="!isEditing">{{ user.experiences || 'Add your work experience' }}</p>
+            <textarea *ngIf="isEditing" [(ngModel)]="editData.experiences" placeholder="Your experiences..."></textarea>
+          </div>
+          <div class="info-group">
+            <label>Projects</label>
+            <p *ngIf="!isEditing">{{ user.projects || 'Share your academic or personal projects' }}</p>
+            <textarea *ngIf="isEditing" [(ngModel)]="editData.projects" placeholder="Your projects..."></textarea>
+          </div>
+          <div class="info-group">
+            <label>Interests</label>
+            <p *ngIf="!isEditing">{{ user.interests || 'What are you passionate about?' }}</p>
+            <input *ngIf="isEditing" [(ngModel)]="editData.interests" placeholder="Interests...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Alumni Profile Sections -->
+      <div *ngIf="userType === 'alumni'" class="card">
+        <div class="card-header">
+          <h3>Expertise & Mentoring</h3>
+          <div class="action-buttons">
+            <button class="edit-btn" *ngIf="!isEditing" (click)="toggleEdit()">Edit</button>
+            <button class="save-btn" *ngIf="isEditing" (click)="saveProfile()">Save</button>
+            <button class="cancel-btn" *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="info-group">
+            <label>Current Job</label>
+            <p *ngIf="!isEditing">{{ user.currentJob || 'Update your position' }}</p>
+            <input *ngIf="isEditing" [(ngModel)]="editData.currentJob" placeholder="Job Title">
+          </div>
+          <div class="info-group">
+            <label>Expertise</label>
+            <p *ngIf="!isEditing">{{ user.expertise || 'Share your domains of expertise' }}</p>
+            <input *ngIf="isEditing" [(ngModel)]="editData.expertise" placeholder="Expertise Domains">
+          </div>
+          <div class="info-group">
+            <label>Professional Path</label>
+            <p *ngIf="!isEditing">{{ user.professionalPath || 'Your career journey' }}</p>
+            <textarea *ngIf="isEditing" [(ngModel)]="editData.professionalPath" placeholder="Your career path..."></textarea>
+          </div>
+          <div class="mentoring-badge" *ngIf="user.openToMentoring">
+            Open to Mentoring
+          </div>
+        </div>
+      </div>
+
+      <!-- Recruiter Profile Sections -->
+      <div *ngIf="userType === 'recruiter'" class="card">
+        <div class="card-header">
+          <h3>Company Presentation</h3>
+          <div class="action-buttons">
+            <button class="edit-btn" *ngIf="!isEditing" (click)="toggleEdit()">Edit</button>
+            <button class="save-btn" *ngIf="isEditing" (click)="saveProfile()">Save</button>
+            <button class="cancel-btn" *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="info-group">
+            <label>About Us</label>
+            <p *ngIf="!isEditing">{{ user.presentation || 'Introduce your company to students' }}</p>
+            <textarea *ngIf="isEditing" [(ngModel)]="editData.presentation" placeholder="Company presentation..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Common Resume Section -->
+      <div class="card resume-card" *ngIf="userType !== 'recruiter'">
+        <div class="card-header">
+          <h3>Resume & Documents</h3>
+        </div>
+        <div class="resume-placeholder">
+          <img src="/speaker-notes.svg" alt="Doc">
+          <div class="resume-info">
+            <p *ngIf="!user.documentName">No document uploaded yet</p>
+            <p *ngIf="user.documentName" class="file-name">Current Resume: <strong>{{ user.documentName }}</strong></p>
+          </div>
+          <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept=".pdf">
+          <button class="upload-btn" (click)="fileInput.click()">
+            {{ user.documentName ? 'Replace Resume (PDF)' : 'Upload Resume (PDF)' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

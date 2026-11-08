@@ -1,0 +1,70 @@
+<div class="experience-container">
+  <div class="tabs">
+    <button [class.active]="activeTab === 'reviews'" (click)="activeTab = 'reviews'">Avis Entreprises</button>
+    <button [class.active]="activeTab === 'knowledge'" (click)="activeTab = 'knowledge'">Base de Connaissances</button>
+    <button [class.active]="activeTab === 'post'" (click)="activeTab = 'post'">Partager mon Expérience</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" [(ngModel)]="searchCompany" placeholder="Rechercher par entreprise..." (keyup.enter)="search()">
+    <button (click)="search()" class="btn-search">Rechercher</button>
+  </div>
+
+  <div class="content">
+    <!-- Reviews List -->
+    <div *ngIf="activeTab === 'reviews'" class="review-list">
+      <div class="review-card" *ngFor="let r of reviews">
+        <div class="review-header">
+          <h3>{{ r.companyName }}</h3>
+          <div class="rating">{{ r.rating }}/5</div>
+        </div>
+        <div class="review-grid">
+          <div>
+            <h4>Culture</h4>
+            <p>{{ r.culture }}</p>
+          </div>
+          <div>
+            <h4>Recrutement</h4>
+            <p>{{ r.recruitmentProcess }}</p>
+          </div>
+          <div>
+            <h4>Conseils</h4>
+            <p>{{ r.interviewTips }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Knowledge Base -->
+    <div *ngIf="activeTab === 'knowledge'" class="knowledge-list">
+      <div class="kb-card" *ngFor="let item of knowledgeItems">
+        <span class="category">{{ item.category }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.content }}</p>
+        <div class="kb-footer">
+          <span>Par {{ item.isAnonymous ? 'Anonyme' : item.author.firstName }}</span>
+          <span>{{ item.createdAt | date }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post Review Form -->
+    <div *ngIf="activeTab === 'post'" class="post-form">
+      <h3>Partager votre expérience</h3>
+      <div class="form-grid">
+        <input type="text" [(ngModel)]="newReview.companyName" placeholder="Nom de l'entreprise">
+        <select [(ngModel)]="newReview.rating">
+          <option [value]="5">5 étoiles</option>
+          <option [value]="4">4 étoiles</option>
+          <option [value]="3">3 étoiles</option>
+          <option [value]="2">2 étoiles</option>
+          <option [value]="1">1 étoile</option>
+        </select>
+        <textarea [(ngModel)]="newReview.culture" placeholder="Culture d'entreprise"></textarea>
+        <textarea [(ngModel)]="newReview.recruitmentProcess" placeholder="Processus de recrutement"></textarea>
+        <textarea [(ngModel)]="newReview.interviewTips" placeholder="Conseils pour l'entretien"></textarea>
+      </div>
+      <button (click)="submitReview()" class="btn-primary">Publier l'avis</button>
+    </div>
+  </div>
+</div>

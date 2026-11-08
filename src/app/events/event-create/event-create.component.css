@@ -1,0 +1,145 @@
+.create-page {
+  padding: 32px;
+  max-width: 720px;
+  margin: 24px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(108, 92, 231, 0.08);
+  border: 1px solid #f0eef8;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h2 {
+  color: #2d2b3d;
+  font-size: 1.5rem;
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  color: #e17055;
+  font-size: 0.9rem;
+  background: #fef3f0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid #e17055;
+}
+
+fieldset {
+  border: 1px solid #e8e5f3;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #fafafe;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 8px;
+  color: #6C5CE7;
+  font-size: 0.95rem;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  background: #fff;
+  color: #333;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #6C5CE7;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #6C5CE7;
+  color: #fff;
+}
+
+.btn-primary:hover { background: #5a4bd1; }
+.btn-primary[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.btn-secondary {
+  background: #f0eef8;
+  color: #6C5CE7;
+}
+
+.btn-secondary:hover { background: #e4e0f4; }
+
+.access-denied {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.denied-card {
+  text-align: center;
+  padding: 48px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.denied-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.denied-card h2 { color: #e74c3c; margin: 0 0 8px; }
+.denied-card p { color: #666; }
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+  .create-page { margin: 12px; padding: 20px; }
+}

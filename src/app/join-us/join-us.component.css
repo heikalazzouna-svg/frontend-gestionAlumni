@@ -1,0 +1,353 @@
+
+
+* {
+ *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;}
+
+.join-us-container {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+
+  }
+  
+  /* Background for the entire page */
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #4A90E2 0%, #1E3A8A 100%);
+    padding: 20px;
+  }
+  
+  /* Container for the entire interface */
+  .join-us-container {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+  }
+  
+  /* Tabs for Sign Up and Log In */
+  .auth-choice {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .auth-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px 10px 0 0;
+    transition: background-color 0.3s;
+  }
+  
+  .auth-tab.active {
+    background-color: #4A90E2;
+    color: white;
+  }
+  
+  .auth-tab:not(.active) {
+    background-color: #D3D3D3;
+    color: #333;
+
+
+
+
+  }
+  
+  .signup-form, .login-form {
+    padding: 10px;
+
+  }
+  
+  /* Sign Up Form */
+  .signup-form {
+    padding: 10px;
+  }
+  
+  /* Radio buttons for user type selection */
+  .user-type-selector {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .radio-option {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .radio-button {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    margin-right: 5px;
+    display: inline-block;
+  }
+  
+  .radio-button.selected {
+    background-color: #333;
+  }
+  
+
+  /* Student Form */
+  .student-form {
+
+    width: 100%;}
+
+  
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #D3D3D3;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+
+  }
+  
+  /* Form group for input fields */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #D3D3D3;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .form-group input:focus {
+    border-color: #4A90E2;
+  }
+  
+  /* Password field with toggle */
+  .password-group {
+    position: relative;
+  }
+  
+  .password-group input {
+    padding-right: 60px;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #4A90E2;
+    cursor: pointer;
+  }
+  
+  /* Password hint */
+  .password-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  /* Terms agreement */
+  .terms-agreement {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .terms-agreement a {
+    color: #4A90E2;
+    text-decoration: none;
+  }
+
+  
+
+
+  .terms-agreement a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Submit button for Sign Up */
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #D3D3D3;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #4A90E2;
+    color: white;
+  }
+  
+  /* Log In Form (Simpler Version) */
+  .form-box {
+    margin-top: 20px;
+
+
+  .login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+  }}
+
+
+  }
+
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+  }
+
+  
+
+
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .form-container {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #D3D3D3;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .form-container input:focus {
+    border-color: #4A90E2;
+  }
+  
+  .form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #D3D3D3;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition:  0.3s;
+  }
+  
+  .form button:hover {
+    background-color: #4A90E2;
+    color: white;
+  }
+  
+  .form-section {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .form-section p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .form-section a {
+    color: #4A90E2;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .form-section a:hover {
+    text-decoration: underline;
+
+  }
+
+  .remember-me input {
+    margin-right: 5px;
+  }
+  
+  .forgot-password {
+    font-size: 14px;
+    color: #4A90E2;
+    text-decoration: none;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #D3D3D3;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #4A90E2;
+
+    color: white;}
+
+    
+

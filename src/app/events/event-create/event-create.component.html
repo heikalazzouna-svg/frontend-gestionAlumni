@@ -1,0 +1,118 @@
+<div class="create-page" *ngIf="canCreate">
+  <div class="page-header">
+    <h2>📅 Créer un événement</h2>
+    <p class="subtitle" *ngIf="userRole === 'recruiter'">
+      ⚠️ Votre événement sera soumis à validation par l'administration.
+    </p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #f="ngForm">
+    <fieldset>
+      <legend>Informations générales</legend>
+      <div class="form-group">
+        <label>Titre *</label>
+        <input name="title" [(ngModel)]="event.title" required placeholder="Nom de l'événement" />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" [(ngModel)]="event.description" placeholder="Décrivez votre événement..." rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Type *</label>
+        <select name="type" [(ngModel)]="event.type" required>
+          <option value="">-- Choisir le type --</option>
+          <option *ngFor="let t of eventTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date de début *</label>
+          <input type="datetime-local" name="startDate" [(ngModel)]="event.startDate" required />
+        </div>
+        <div class="form-group">
+          <label>Date de fin</label>
+          <input type="datetime-local" name="endDate" [(ngModel)]="event.endDate" />
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Détails</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Durée</label>
+          <input name="duration" [(ngModel)]="event.duration" placeholder="ex: 2h, 1 jour" />
+        </div>
+        <div class="form-group">
+          <label>Nombre de places</label>
+          <input type="number" name="seats" [(ngModel)]="event.seats" min="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Lieu</label>
+        <input name="location" [(ngModel)]="event.location" placeholder="Adresse physique" />
+      </div>
+      <div class="form-group">
+        <label>Format</label>
+        <select name="format" [(ngModel)]="event.format">
+          <option *ngFor="let f of formats" [value]="f">{{ f }}</option>
+        </select>
+      </div>
+      <div class="form-group" *ngIf="event.format === 'distanciel' || event.format === 'hybride'">
+        <label>Lien visioconférence</label>
+        <input name="virtualLink" [(ngModel)]="event.virtualLink" placeholder="https://zoom.us/..." />
+      </div>
+      <div class="form-group">
+        <label>Domaine</label>
+        <input name="domain" [(ngModel)]="event.domain" placeholder="Tech, Finance, Santé..." />
+      </div>
+      <div class="form-group">
+        <label>Public cible</label>
+        <input name="targetAudience" [(ngModel)]="event.targetAudience" placeholder="Étudiants, Alumni, Tous..." />
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Intervenants & Programme</legend>
+      <div class="form-group">
+        <label>Intervenants (séparés par des virgules)</label>
+        <input name="speakers" [(ngModel)]="event.speakers" placeholder="Jean Dupont, Marie Martin..." />
+      </div>
+      <div class="form-group">
+        <label>Programme détaillé</label>
+        <textarea name="schedule" [(ngModel)]="event.schedule" rows="4" placeholder="09:00 - Accueil&#10;10:00 - Conférence&#10;12:00 - Networking"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Prérequis</label>
+        <textarea name="prerequisites" [(ngModel)]="event.prerequisites" placeholder="Connaissances requises..."></textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Entreprises & Visuels</legend>
+      <div class="form-group">
+        <label>Entreprises participantes (séparées par des virgules)</label>
+        <input name="companies" [(ngModel)]="event.companies" placeholder="Google, Microsoft, BNP..." />
+      </div>
+      <div class="form-group">
+        <label>Image / bannière (URL)</label>
+        <input name="bannerUrl" [(ngModel)]="event.bannerUrl" placeholder="https://..." />
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="goBack()">Annuler</button>
+      <button class="btn btn-primary" type="submit" [disabled]="!f.form.valid">
+        {{ userRole === 'recruiter' ? 'Soumettre pour validation' : 'Créer l\'événement' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="access-denied" *ngIf="!canCreate">
+  <div class="denied-card">
+    <span class="denied-icon">🚫</span>
+    <h2>Accès refusé</h2>
+    <p>Seuls les administrateurs et recruteurs peuvent créer des événements.</p>
+  </div>
+</div>

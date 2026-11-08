@@ -1,0 +1,87 @@
+<div class="profile-container" *ngIf="!isLoading">
+  <div class="back-link">
+    <a [routerLink]="['../matching']" class="btn-text">← Retour à la recherche</a>
+  </div>
+  <div class="profile-header">
+    <div class="avatar-large">
+      <img *ngIf="alumni.avatarUrl" [src]="alumni.avatarUrl" [alt]="alumni.firstName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" />
+      <span *ngIf="!alumni.avatarUrl">{{ alumni.firstName[0] }}{{ alumni.lastName[0] }}</span>
+    </div>
+    <div class="profile-info">
+      <h1>{{ alumni.firstName }} {{ alumni.lastName }}</h1>
+      <p class="headline">{{ alumni.currentJob }} chez {{ alumni.currentCompany }}</p>
+      <div class="meta-tags">
+        <span class="meta-tag">{{ alumni.speciality }}</span>
+        <span class="meta-tag">Promo {{ alumni.graduationYear }}</span>
+        <span class="meta-tag">{{ alumni.sector }}</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button *ngIf="alumni.openToMentoring && !requestSent" [routerLink]="['../../request', alumni.id]" class="btn-primary">Demander un Mentorat</button>
+      <span *ngIf="requestSent" class="status-badge success">Demande envoyée</span>
+      <button class="btn-secondary" [routerLink]="['../chat', alumni.id]">Message</button>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <div class="main-column">
+      <section class="bio-section">
+        <h2>À propos</h2>
+        <p>{{ alumni.expertise || 'Aucune biographie fournie.' }}</p>
+      </section>
+
+      <section class="experience-section">
+        <h2>Expériences Professionnelles</h2>
+        <div class="experience-list">
+          <div class="exp-item" *ngFor="let exp of alumni.experiences">
+            <div class="exp-icon"><i class="fas fa-briefcase"></i></div>
+            <div class="exp-details">
+              <h3>{{ exp.position }}</h3>
+              <p class="company">{{ exp.company }}</p>
+              <p class="date">{{ exp.startDate | date:'MMM yyyy' }} - {{ exp.endDate ? (exp.endDate | date:'MMM yyyy') : 'Présent' }}</p>
+              <p class="desc">{{ exp.description }}</p>
+            </div>
+          </div>
+        </div>
+        <p class="empty-state" *ngIf="!alumni.experiences || alumni.experiences.length === 0">
+          {{ alumni.professionalPath || 'Aucune expérience professionnelle renseignée.' }}
+        </p>
+      </section>
+
+      <section class="path-section" *ngIf="alumni.academicPath || alumni.professionalPath">
+        <h2>Parcours</h2>
+        <div class="paths">
+          <div class="path-block" *ngIf="alumni.academicPath">
+            <h3>Académique</h3>
+            <p>{{ alumni.academicPath }}</p>
+          </div>
+          <div class="path-block" *ngIf="alumni.professionalPath">
+            <h3>Professionnel</h3>
+            <p>{{ alumni.professionalPath }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="side-column">
+      <div class="skills-card">
+        <h3>Compétences</h3>
+        <div class="tags">
+          <span class="tag" *ngFor="let skill of alumni.skills">{{ skill }}</span>
+        </div>
+        <p class="empty-state" *ngIf="!alumni.skills || alumni.skills.length === 0">
+          Aucune compétence renseignée.
+        </p>
+      </div>
+
+      <div class="availability-card" *ngIf="alumni.availabilityDetails">
+        <h3>Disponibilité</h3>
+        <p>{{ alumni.availabilityDetails }}</p>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div *ngIf="isLoading" class="loader">Chargement du profil...</div>

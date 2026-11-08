@@ -1,0 +1,94 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <a routerLink="/" class="auth-brand">
+        <span class="brand-icon">&#9670;</span>
+        <span>Edu<span class="brand-accent">Link</span></span>
+      </a>
+      <div class="auth-illustration">
+        <div class="illustration-shapes">
+          <div class="ill-shape ill-1"></div>
+          <div class="ill-shape ill-2"></div>
+          <div class="ill-shape ill-3"></div>
+        </div>
+        <h2>Bon retour parmi nous !</h2>
+        <p>Accède à ton réseau, explore les offres et continue à construire ton avenir professionnel.</p>
+      </div>
+      <div class="auth-testimonial">
+        <p>"Grâce à EduLink, j'ai trouvé mon stage PFE en moins de 2 semaines !"</p>
+        <div class="testimonial-author">
+          <div class="avatar">A</div>
+          <div>
+            <strong>Ahmed B.</strong>
+            <span>Étudiant en Génie Logiciel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-wrapper">
+      <div class="auth-form-header">
+        <h1>Connexion</h1>
+        <p>Connecte-toi pour accéder à ton espace</p>
+      </div>
+
+      <form class="auth-form" novalidate aria-label="Formulaire de connexion">
+        <div class="form-group">
+          <label id="role-label">Je suis</label>
+          <div class="role-selector" role="radiogroup" aria-labelledby="role-label">
+            <button type="button" class="role-option" role="radio" [attr.aria-checked]="login.role === 'student'" [class.active]="login.role === 'student'" (click)="login.role = 'student'">
+              <span class="role-emoji" aria-hidden="true">🎓</span>
+              <span>Étudiant</span>
+            </button>
+            <button type="button" class="role-option" role="radio" [attr.aria-checked]="login.role === 'alumni'" [class.active]="login.role === 'alumni'" (click)="login.role = 'alumni'">
+              <span class="role-emoji" aria-hidden="true">🌟</span>
+              <span>Alumni</span>
+            </button>
+            <button type="button" class="role-option" role="radio" [attr.aria-checked]="login.role === 'recruiter'" [class.active]="login.role === 'recruiter'" (click)="login.role = 'recruiter'">
+              <span class="role-emoji" aria-hidden="true">🏢</span>
+              <span>Recruteur</span>
+            </button>
+            <button type="button" class="role-option" role="radio" [attr.aria-checked]="login.role === 'admin'" [class.active]="login.role === 'admin'" (click)="login.role = 'admin'">
+              <span class="role-emoji" aria-hidden="true">⚙️</span>
+              <span>Admin</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Adresse email</label>
+          <div class="input-wrapper">
+            <i class="fa fa-envelope input-icon" aria-hidden="true"></i>
+            <input type="email" id="email" placeholder="nom@exemple.com" [(ngModel)]="login.email" name="email" required autocomplete="email" aria-required="true">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="fa fa-lock input-icon" aria-hidden="true"></i>
+            <input type="password" id="password" placeholder="Entrez votre mot de passe" [(ngModel)]="login.password" name="password" required autocomplete="current-password" aria-required="true">
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message" role="alert" aria-live="assertive">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          {{ errorMessage }}
+        </div>
+
+        <button type="button" class="submit-btn" [disabled]="isLoading" (click)="onLogin()" [attr.aria-busy]="isLoading">
+          <span *ngIf="!isLoading">Se connecter</span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> Connexion en cours...
+          </span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Pas encore de compte ? <a routerLink="/sign-up">Créer un compte</a></p>
+      </div>
+    </div>
+  </div>
+</div>

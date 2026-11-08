@@ -1,0 +1,19 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a routerLink="/" class="logo-group">
+      <span class="brand-icon">&#9670;</span>
+      <span class="brand-text">Edu<span class="accent">Link</span></span>
+    </a>
+
+    <nav class="nav-center">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Accueil</a>
+      <a routerLink="/events" routerLinkActive="active" class="nav-link">Événements</a>
+      <a routerLink="/ai-simulator" routerLinkActive="active" class="nav-link">Simulateur IA</a>
+    </nav>
+
+    <div class="nav-right">
+      <a routerLink="/login" class="outline-btn">Connexion</a>
+      <a routerLink="/sign-up" class="cta-btn">S'inscrire</a>
+    </div>
+  </div>
+</header>

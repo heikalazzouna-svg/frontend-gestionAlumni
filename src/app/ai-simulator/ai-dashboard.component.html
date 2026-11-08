@@ -1,0 +1,134 @@
+<div class="dashboard-wrapper">
+  <div class="page-bg"></div>
+
+  <!-- HERO -->
+  <div class="dash-hero">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Historique · Progression
+    </div>
+    <h1>Mon <em>Tableau de bord</em></h1>
+    <p>Suivez votre progression et consultez vos <span>simulations passées</span></p>
+  </div>
+
+  <div class="dash-layout">
+
+    <!-- ── TOP STATS ── -->
+    <div class="stats-row">
+      <div class="stat-card orange">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-value orange">{{ history.length }}</div>
+        <div class="stat-label">Simulations réalisées</div>
+      </div>
+      <div class="stat-card cyan">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value cyan">{{ avgScore }}</div>
+        <div class="stat-label">Score moyen</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value green">{{ unlockedBadges }}</div>
+        <div class="stat-label">Badges débloqués</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value purple">{{ bestScore }}</div>
+        <div class="stat-label">Meilleur score</div>
+      </div>
+    </div>
+
+    <!-- ── MAIN CONTENT ── -->
+    <div class="dash-content">
+
+      <!-- LEFT: History -->
+      <div class="dash-main">
+
+        <!-- Header row -->
+        <div class="section-header-row">
+          <div class="section-title">
+            <span class="section-icon">📋</span>
+            Historique des entretiens
+          </div>
+          <div class="header-actions">
+            <button class="btn-icon" (click)="load()" title="Rafraîchir">
+              🔄
+            </button>
+            <button class="btn-danger" (click)="clear()">
+              🗑 Effacer
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="history.length === 0" class="empty-state">
+          <div class="empty-icon">🤖</div>
+          <div class="empty-title">Aucun entretien enregistré</div>
+          <div class="empty-sub">Lancez votre première simulation pour voir votre historique ici.</div>
+        </div>
+
+        <!-- History list -->
+        <div class="history-list" *ngIf="history.length > 0">
+          <div *ngFor="let s of history; let i = index" class="history-card">
+
+            <!-- Left: index + info -->
+            <div class="hc-left">
+              <div class="hc-index">#{{ history.length - i }}</div>
+              <div class="hc-info">
+                <div class="hc-title">{{ s.jobType }} — {{ s.level }}</div>
+                <div class="hc-meta">
+                  <span class="hc-tag">{{ s.interviewType || 'RH' }}</span>
+                  <span class="hc-date">{{ s.startedAt | date:'dd MMM yyyy · HH:mm' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: score -->
+            <div class="hc-right">
+              <div class="hc-score" [class.high]="(s.overallScore ?? 0) >= 75" [class.mid]="(s.overallScore ?? 0) >= 50 && (s.overallScore ?? 0) < 75" [class.low]="(s.overallScore ?? 0) < 50">
+                {{ s.overallScore || '—' }}
+              </div>
+              <div class="hc-score-label">/ 100</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Badges -->
+      <div class="dash-side">
+
+        <div class="section-title" style="margin-bottom: 1.2rem">
+          <span class="section-icon">🏅</span>
+          Mes badges
+        </div>
+
+        <div class="badges-grid">
+          <div
+            *ngFor="let key of badgeKeys"
+            class="badge-item"
+            [class.unlocked]="badges[key]"
+            [class.locked]="!badges[key]">
+            <div class="badge-glow"></div>
+            <div class="badge-icon">{{ getBadgeIcon(key) }}</div>
+            <div class="badge-name">{{ getBadgeLabel(key) }}</div>
+            <div class="badge-status">{{ badges[key] ? 'Débloqué' : 'Verrouillé' }}</div>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-section" *ngIf="badgeKeys.length > 0">
+          <div class="progress-label">
+            <span>Progression badges</span>
+            <span class="progress-count">{{ unlockedBadges }} / {{ badgeKeys.length }}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="badgeProgress"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

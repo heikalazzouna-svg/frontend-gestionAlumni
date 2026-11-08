@@ -1,0 +1,123 @@
+<!-- ===== Header Profile Strip ===== -->
+<div class="profile-strip">
+  <button class="strip-icon bell-icon" (click)="onMenuItemClick('notifications')" title="Notifications">
+    <i class="fas fa-bell"></i>
+    <span class="strip-badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+  </button>
+
+  <button class="strip-icon message-icon" (click)="onMenuItemClick('messages')" title="Messages">
+    <i class="fas fa-envelope"></i>
+  </button>
+
+  <div class="profile-trigger" (click)="toggleMenu()">
+    <span class="profile-name">{{ user?.firstName?.toUpperCase() }}</span>
+    <div class="profile-avatar-sm">
+      <img *ngIf="displayAvatar" [src]="displayAvatar" [alt]="user?.firstName" class="avatar-img-sm" />
+      <span *ngIf="!displayAvatar" class="avatar-initials-sm">{{ userInitials }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Dropdown Menu ===== -->
+<div class="menu-backdrop" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
+
+<div class="user-menu-dropdown" [class.open]="isMenuOpen">
+  <!-- Header -->
+  <div class="menu-header">
+    <h3 class="menu-title">Menu utilisateur</h3>
+    <button class="close-btn" (click)="closeMenu()" title="Fermer">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Profile Info -->
+  <div class="menu-profile">
+    <div class="avatar-upload-wrapper" (click)="triggerFileUpload()">
+      <div class="menu-avatar">
+        <img *ngIf="displayAvatar" [src]="displayAvatar" [alt]="user?.firstName" class="avatar-img-lg" />
+        <span *ngIf="!displayAvatar" class="avatar-initials-lg">{{ userInitials }}</span>
+      </div>
+      <div class="camera-overlay" *ngIf="!isUploading">
+        <i class="fas fa-camera"></i>
+      </div>
+      <div class="camera-overlay uploading" *ngIf="isUploading">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+    </div>
+    <input
+      #fileInput
+      type="file"
+      accept="image/*"
+      class="file-input-hidden"
+      (change)="onFileSelected($event)"
+    />
+
+    <div class="profile-details">
+      <h4 class="profile-full-name">{{ user?.firstName }} {{ user?.lastName }}</h4>
+      <div class="profile-email">
+        <i class="fas fa-envelope email-icon"></i>
+        <span>{{ user?.email }}</span>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="menu-divider"></div>
+
+  <!-- Menu Items -->
+  <div class="menu-items">
+    <div class="menu-item" (click)="onMenuItemClick('profile')">
+      <div class="menu-item-icon orange">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="menu-item-text">
+        <span class="menu-item-title">Mon profil</span>
+        <span class="menu-item-subtitle">Consulter les informations personnelles</span>
+      </div>
+    </div>
+
+    <div class="menu-item" (click)="onMenuItemClick('notifications')">
+      <div class="menu-item-icon red">
+        <i class="fas fa-bell"></i>
+      </div>
+      <div class="menu-item-text">
+        <span class="menu-item-title">Mes notifications</span>
+        <span class="menu-item-subtitle">Afficher la liste des notifications</span>
+      </div>
+    </div>
+
+    <div class="menu-item" (click)="onMenuItemClick('preferences')">
+      <div class="menu-item-icon blue">
+        <i class="fas fa-wrench"></i>
+      </div>
+      <div class="menu-item-text">
+        <span class="menu-item-title">Mes préférences</span>
+        <span class="menu-item-subtitle">Ajuster vos préférences de notification, d'affichage, ...</span>
+      </div>
+    </div>
+
+    <div class="menu-item" (click)="onMenuItemClick('login-history')">
+      <div class="menu-item-icon red">
+        <i class="fas fa-ellipsis-h"></i>
+      </div>
+      <div class="menu-item-text">
+        <span class="menu-item-title">Historique des connexions</span>
+        <span class="menu-item-subtitle">Consulter l'historique des tentatives de connexion à mon compte</span>
+      </div>
+    </div>
+
+    <div class="menu-item" (click)="onMenuItemClick('change-password')">
+      <div class="menu-item-icon green">
+        <i class="fas fa-lock"></i>
+      </div>
+      <div class="menu-item-text">
+        <span class="menu-item-title">Changer mot de passe</span>
+        <span class="menu-item-subtitle">Changer votre mot de passe</span>
+      </div>
+    </div>
+  </div>
+</div>
